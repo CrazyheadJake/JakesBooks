@@ -7,7 +7,7 @@ import Signup from "./pages/Signup"
 import './App.css'
 
 function App() {
-  // const [message, setMessage] = useState("");
+  const [loggedIn, setLogin] = useState(false);
 
   // useEffect(() => {
   //   fetch("/api/message")
@@ -15,7 +15,6 @@ function App() {
   //     .then((data) => setMessage(data.text))
   //     .catch((err) => console.error(err));
   // }, []);
-  const loggedIn = true;
   return (
     <Router>
       <Navbar isLoggedIn={loggedIn} />
@@ -25,7 +24,7 @@ function App() {
             path="/"
             element={loggedIn ? <Home />: <Navigate to="/login" replace />}
           />
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<Login setLogin={(x: boolean) => setLogin(x)} />} />
           <Route path="/signup" element={<Signup />} />
         </Routes>
       </div>
