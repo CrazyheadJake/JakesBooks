@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom';
 
 function Login({ setLogin }: { setLogin: (x: boolean) => void }) {
+    const navigate = useNavigate();
     const [error, setError] = useState("");
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -20,7 +22,7 @@ function Login({ setLogin }: { setLogin: (x: boolean) => void }) {
         if (res.ok) {
             // Login success
             setLogin(true);
-            window.location.href = "/";
+            navigate("/");
         } else {
             // Login failed
             setLogin(false);

@@ -4,17 +4,27 @@ import Navbar from "./templates/Navbar";
 import Home from "./pages/Home"
 import Login from "./pages/Login"
 import Signup from "./pages/Signup"
+import Logout from "./pages/Logout"
 import './App.css'
 
 function App() {
-  const [loggedIn, setLogin] = useState(false);
+  const [loggedIn, setLogin] = useState(true);
 
-  // useEffect(() => {
-  //   fetch("/api/message")
-  //     .then((res) => res.json())
-  //     .then((data) => setMessage(data.text))
-  //     .catch((err) => console.error(err));
-  // }, []);
+  useEffect(() => {
+    async function checkAuth() {
+      const res = await fetch("/api/checkAuth", {
+        credentials: "include"
+      });
+      const data = await res.json();
+      setLogin(data.loggedIn);
+    }
+  
+  checkAuth();
+  }, []);
+  useEffect(() => {
+    console.log("loggedIn changed:", loggedIn);
+  }, [loggedIn]);
+
   return (
     <Router>
       <Navbar isLoggedIn={loggedIn} />
@@ -24,8 +34,10 @@ function App() {
             path="/"
             element={loggedIn ? <Home />: <Navigate to="/login" replace />}
           />
-          <Route path="/login" element={<Login setLogin={(x: boolean) => setLogin(x)} />} />
-          <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={loggedIn ? <Navigate to="/" replace /> : <Login setLogin={(x: boolean) => setLogin(x)} />} />
+          <Route path="/signup" element={loggedIn ? <Navigate to="/" replace /> : <Signup setLogin={(x: boolean) => setLogin(x)} />} />
+          <Route path="/logout" element={<Logout setLogin={(x: boolean) => setLogin(x)} />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
       

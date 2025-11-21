@@ -3,41 +3,28 @@ import { getDb } from "./db.js";
 import { get } from "http";
 import crypto from "crypto";
 import bcrypt from "bcrypt";
+import { MongoServerError } from "mongodb";
 
-function storePassword(email: string, password: string) {
+async function hashPassword(password: string) {
   const saltRounds = 10;
-  bcrypt.hash(password, saltRounds, async (err, hash) => {
-    if (err) {
-      // Handle error
-      console.error(err);
-      return;
-    }
-    // Store the 'hash' in your database
-    console.log('Hashed password:', hash);
-    const db = await getDb();
-
-    const user = await db.collection("users").insertOne({
-      email: email,
-      password: hash,
-    });
-    console.log("user:", user);
-    });
+  try {
+    const hash = await bcrypt.hash(password, saltRounds);
+    return hash;
+  }
+  catch (err) {
+    console.log(err);
+    return null;
+  }
 }
 
-function checkPasswordHash(password: string, stored: string) {
-  const [method, salt, storedHash]: string[] = stored.split("$");
-  if (method !== "sha256") return false;
-
-  const hash = crypto
-    .createHash("sha256")
-    .update(salt + password, "utf-8")
-    .digest("hex");
-  console.log("hash:", hash);
-  console.log("storedHash:", storedHash);
-  return crypto.timingSafeEqual(
-    Buffer.from(hash, "hex"),
-    Buffer.from(storedHash!, "hex")
-  );
+function checkAuth(req: Request, res: Response) {
+  console.log("checkAuth called: ", req.session, req.session?.user);
+  if (req.session?.user) {
+    res.status(200).json({ user: req.session.user, loggedIn: true });
+  }
+  else {
+    res.status(401).json({ error: "Not logged in", loggedIn: false });
+  }
 }
 
 function requireAuth(req: Request, res: Response, next: NextFunction) {
@@ -49,20 +36,45 @@ function requireAuth(req: Request, res: Response, next: NextFunction) {
 
 async function login(req: Request, res: Response) {
   const { username, password } = req.body;
-  console.log("request received");
   const db = await getDb();
-
-  const user = await db.collection("user").findOne({ email: username });
-  console.log("user:", user);
+  console.log("username:", username);
   console.log("password:", password);
-  if (user)
-    console.log("checkPasswordHash(password, user.password):", checkPasswordHash(password, user.password));
-  if (!user || !checkPasswordHash(password, user.password)) {
+
+  const user = await db.collection("users").findOne({ email: username });
+  console.log("DB user:", user);
+  console.log("DB password:", password);
+  if (!user || !bcrypt.compareSync(password, user.password)) {
     return res.status(401).json({ error: "Invalid username or password" });
   }
 
   req.session.user = { username: username };
   res.status(200).json({ message: "Logged in successfully" });
+}
+
+async function signup(req: Request, res: Response) {
+  console.log("signup called");
+  const { name, email, password } = req.body;
+  const db = await getDb();
+  const hash = await hashPassword(password);
+  if (!hash) return res.status(500).json({ error: "Error hashing password" });
+  try {
+    const newUser = await db.collection("users").insertOne({
+        firstName: name,
+        email: email,
+        password: hash,
+    });
+    req.session.user = { username: email };
+    res.status(201).json({ message: "User created successfully" });
+  }
+  catch (err){
+    if (err instanceof MongoServerError && err.code === 11000) {
+      return res.status(500).json({ error: "Email already exists" });
+    }
+    else {
+      console.log(err);
+      return res.status(500).json({ error: "Error creating user" });
+    }
+  }
 }
 
 function logout(req: Request, res: Response) {
@@ -74,4 +86,4 @@ function logout(req: Request, res: Response) {
   });
 }
 
-export { requireAuth, login, logout }
+export { checkAuth, requireAuth, login, logout, signup }

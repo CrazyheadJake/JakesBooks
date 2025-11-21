@@ -12,6 +12,10 @@ export async function getDb() {
   if (!connected) {
     await client.connect();
     connected = true;
+    client.db("jakesbooks-dev").dropCollection("users");
+    await client.db("jakesbooks-dev").createCollection("users");
+    await client.db("jakesbooks-dev").collection("users").createIndex({ email: 1 }, { unique: true });
+    console.log("Connected to MongoDB");
   }
   return client.db("jakesbooks-dev");
 }
