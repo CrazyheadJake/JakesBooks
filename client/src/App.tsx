@@ -9,6 +9,7 @@ import './App.css'
 
 function App() {
   const [loggedIn, setLogin] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     async function checkAuth() {
@@ -27,15 +28,15 @@ function App() {
 
   return (
     <Router>
-      <Navbar isLoggedIn={loggedIn} />
+      <Navbar isLoggedIn={loggedIn} error={error}/>
       <div className="container-fluid">
         <Routes>
           <Route
             path="/"
-            element={loggedIn ? <Home />: <Navigate to="/login" replace />}
+            element={loggedIn ? <Home setError={setError} />: <Navigate to="/login" replace />}
           />
-          <Route path="/login" element={loggedIn ? <Navigate to="/" replace /> : <Login setLogin={(x: boolean) => setLogin(x)} />} />
-          <Route path="/signup" element={loggedIn ? <Navigate to="/" replace /> : <Signup setLogin={(x: boolean) => setLogin(x)} />} />
+          <Route path="/login" element={loggedIn ? <Navigate to="/" replace /> : <Login setLogin={setLogin} setError={setError}/>} />
+          <Route path="/signup" element={loggedIn ? <Navigate to="/" replace /> : <Signup setLogin={setLogin} setError={setError}/>} />
           <Route path="/logout" element={<Logout setLogin={(x: boolean) => setLogin(x)} />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

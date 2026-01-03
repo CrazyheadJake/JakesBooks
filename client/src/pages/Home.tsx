@@ -1,4 +1,8 @@
-function Home() {
+import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom';
+
+function Home({ setError }: { setError: (x: string) => void })  {
+    const [ bookError, setBookError ] = useState("");
     return (
     <><h1 style={{textAlign: "center"}}>Book Log</h1>
     {/* <div class="container-fluid" align="date"> */}
@@ -83,7 +87,7 @@ function Home() {
             </button>
         </div>
         <div className="modal-body">
-            <form method="POST">
+            <form method="POST" onSubmit={(e) => addBook(e, setBookError)}>
                 <div className="form-group">
                     <label className="required-label" htmlFor="title required-label">Title</label>
                     <input
@@ -120,7 +124,7 @@ function Home() {
                     <div className="form-group col-3">
                         <label htmlFor="seriesNumber">Number</label>
                         <input
-                            type="text"
+                            type="number"
                             className="form-control"
                             id="seriesNumber"
                             name="seriesNumber"
@@ -131,7 +135,7 @@ function Home() {
                     <div className="form-group col-3">
                         <label className="required-label" htmlFor="rating" >Rating</label>
                         <input
-                            type="text"
+                            type="number"
                             className="form-control"
                             id="rating"
                             name="rating"
@@ -160,7 +164,7 @@ function Home() {
                 <div className="form-row">
                     <div className="form-group col">
                         <label className="required-label" htmlFor="month">Month</label>
-                        <select id="month" name="month" className="form-control" required={true}>
+                        <select id="month" name="month" className="form-control" itemType="number" required={true}>
                             <option selected value="1">January</option>
                             <option value="2">February</option>
                             <option value="3">March</option>
@@ -178,7 +182,7 @@ function Home() {
 
                     <div className="form-group col">
                         <label className="required-label" htmlFor="day">Day</label>
-                        <input type="text"
+                        <input type="number"
                                 className="form-control"
                                 id="day"
                                 name="day"
@@ -188,7 +192,7 @@ function Home() {
 
                     <div className="form-group col">
                         <label className="required-label" htmlFor="year">Year</label>
-                        <input type="text"
+                        <input type="number"
                             className="form-control"
                             id="year"
                             name="year"
@@ -204,6 +208,9 @@ function Home() {
                     <textarea className="form-control" name="review" id="review" rows={3}></textarea>
                 </div>
                 <br/>
+                <div>
+                    {bookError && <div className="alert alert-danger">{bookError}</div>}
+                </div>
                 <div style={{textAlign: "right"}}>
                     <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="submit" className="btn btn-primary">Add Entry</button>
@@ -247,6 +254,49 @@ function Home() {
     </div>
     </>
     )
+}
+
+async function addBook(e: React.FormEvent<HTMLFormElement>, setError: (x: string) => void) {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    const rating: number = parseInt(formData.get("rating") as string);
+    const month: number = parseInt(formData.get("month") as string);
+    const day: number = parseInt(formData.get("day") as string);
+    const year: number = parseInt(formData.get("year") as string);
+    const date: Date = new Date(year, month - 1, day);
+    console.log(date);
+    console.log(date.toLocaleDateString());
+    
+    if (isNaN(date.getTime()) || day < 1 || day > 31 || year < 1900) {
+        setError("Invalid date");
+        return;
+    }
+    if (rating < 0 || rating > 100) {
+        setError("Invalid rating, must be between 0 and 100");
+        return;
+    }
+
+    let book = {
+        title: formData.get("title") as string,
+        author: formData.get("author") as string,
+        series: formData.get("series") as string,
+        seriesNumber: formData.get("seriesNumber") as string,
+        rating: formData.get("rating") as string,
+        genre: formData.get("genre") as string,
+        month: month,
+        day: day,
+        year: year,
+        review: formData.get("review") as string,
+    };
+
+    const res = await fetch("/api/addBook", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(book)
+    });
+    console.log(res);
+
 }
 
 export default Home;

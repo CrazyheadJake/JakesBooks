@@ -47,7 +47,7 @@ async function login(req: Request, res: Response) {
     return res.status(401).json({ error: "Invalid username or password" });
   }
 
-  req.session.user = { username: username };
+  req.session.user = { id: user._id, username: username };
   res.status(200).json({ message: "Logged in successfully" });
 }
 
@@ -63,7 +63,9 @@ async function signup(req: Request, res: Response) {
         email: email,
         password: hash,
     });
-    req.session.user = { username: email };
+    const user = await db.collection("users").findOne({ email: email });
+    if (user == null) throw new Error("User not found");
+    req.session.user = { id: user._id, username: email };
     res.status(201).json({ message: "User created successfully" });
   }
   catch (err){

@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
+import { useState, useEffect } from 'react'
 
-function Navbar({ isLoggedIn }: {isLoggedIn: boolean}) {
+function Navbar({ isLoggedIn, error }: {isLoggedIn: boolean, error: string}) {
+
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+    <><nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <button
         className="navbar-toggler"
         type="button"
@@ -27,7 +29,12 @@ function Navbar({ isLoggedIn }: {isLoggedIn: boolean}) {
         </div>
       </div>
     </nav>
+    <div>
+        {error && <div className="alert alert-danger">{error}</div>}
+    </div></>
   );
 }
+
+
 
 export default Navbar;

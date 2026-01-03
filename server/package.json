@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "dev": "tsc --watch"
+    "build:dev": "tsc --watch",
+    "dev": "node ./dist/server.js"
   },
   "author": "Jacob Moleski",
   "license": "Apache-2.0",

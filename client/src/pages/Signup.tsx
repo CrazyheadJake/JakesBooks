@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 
-function Signup({ setLogin }: { setLogin: (x: boolean) => void }) {
+function Signup({ setLogin, setError }: { setLogin: (x: boolean) => void, setError: (x: string) => void}) {
     const navigate = useNavigate();
-    const [error, setError] = useState("");
         async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
             e.preventDefault();
             setError("");
@@ -88,9 +87,6 @@ function Signup({ setLogin }: { setLogin: (x: boolean) => void }) {
         <br />
         <button type="submit" className="btn btn-primary">Submit</button>
     </form>
-    <div>
-        {error && <div className="alert alert-danger">{error}</div>}
-    </div>
     </>
     )
 }
