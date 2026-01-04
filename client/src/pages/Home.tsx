@@ -87,7 +87,7 @@ function Home({ setError }: { setError: (x: string) => void })  {
             </button>
         </div>
         <div className="modal-body">
-            <form method="POST" onSubmit={(e) => addBook(e, setBookError)}>
+            <form onSubmit={(e) => addBook(e, setBookError)}>
                 <div className="form-group">
                     <label className="required-label" htmlFor="title required-label">Title</label>
                     <input
@@ -212,7 +212,7 @@ function Home({ setError }: { setError: (x: string) => void })  {
                     {bookError && <div className="alert alert-danger">{bookError}</div>}
                 </div>
                 <div style={{textAlign: "right"}}>
-                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" className="btn btn-secondary" id="closeModal" data-dismiss="modal">Close</button>
                     <button type="submit" className="btn btn-primary">Add Entry</button>
                 </div>
             </form>
@@ -261,6 +261,7 @@ async function addBook(e: React.FormEvent<HTMLFormElement>, setError: (x: string
     const form = e.currentTarget;
     const formData = new FormData(form);
     const rating: number = parseInt(formData.get("rating") as string);
+    const seriesNumber: number = parseInt(formData.get("seriesNumber") as string);
     const month: number = parseInt(formData.get("month") as string);
     const day: number = parseInt(formData.get("day") as string);
     const year: number = parseInt(formData.get("year") as string);
@@ -276,13 +277,17 @@ async function addBook(e: React.FormEvent<HTMLFormElement>, setError: (x: string
         setError("Invalid rating, must be between 0 and 100");
         return;
     }
+    if (formData.get("seriesNumber") != "" && isNaN(seriesNumber)) {
+        setError("Invalid series number");
+        return;
+    }
 
-    let book = {
+    const book = {
         title: formData.get("title") as string,
         author: formData.get("author") as string,
         series: formData.get("series") as string,
-        seriesNumber: formData.get("seriesNumber") as string,
-        rating: formData.get("rating") as string,
+        seriesNumber: seriesNumber,
+        rating: rating,
         genre: formData.get("genre") as string,
         month: month,
         day: day,
@@ -296,6 +301,16 @@ async function addBook(e: React.FormEvent<HTMLFormElement>, setError: (x: string
         body: JSON.stringify(book)
     });
     console.log(res);
+    if (res.ok) {
+        form.reset();
+        const modalClose = document.getElementById("closeModal");
+        modalClose?.click();
+    }
+    else {
+        const body = await res.json();
+        setError(body.error);
+    }
+    
 
 }
 
