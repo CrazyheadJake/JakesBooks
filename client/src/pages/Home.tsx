@@ -7,37 +7,9 @@ function Home({ setError }: { setError: (x: string) => void })  {
     <><h1 style={{textAlign: "center"}}>Book Log</h1>
     {/* <div class="container-fluid" align="date"> */}
         {/* <div class="row"> */}
-            {/* {% for entry in user.entries %}
-            <div class="card border-info mr-3 mb-3" style="width: 14rem;">
-                <img class="card-img-top" src="{{entry.cover}}" alt="Book Cover" onError="this.onerror=null;this.src='../static/covers/default_cover.jpg';">
-
-                <div class="card-body p-2" align="center">
-                    <h5 class="card-title mb-1">{{ entry.title }}</h5>
-                    {% if entry.is_series %}
-                    <h5 class="card-subtitle mb-1 text-muted">by {{ entry.author }}</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">({{ entry.series + " #"}}{{ ('%f' % entry.num_in_series).rstrip('0').rstrip('.') }})</h6>
-                    {% else %}
-                    <h5 class="card-subtitle mb-2 text-muted">by {{ entry.author }}</h5>
-                    {% endif %}
-
-                    <h5 class="card-subtitle mb-2 text-muted">{{ format(entry.date) }}</h5>
-
-                    {% if entry.review %}
-                    <p class="card-text" align="left">{{ entry.review[:80] }}...</p>
-                    {% endif %}
-                    <div class="progress">
-                        <div class="progress-bar" style="width: {{entry.rating}}%" role="progressbar">{{entry.rating}}/100</div>
-                    </div>
-
-                    {% if entry.review %}
-                    <button type="button" class="btn btn-info mt-3" data-toggle="modal" data-target="#editEntry{{entry.id}}">Edit</button>
-                    <button type="button" class="btn btn-info mt-3" data-toggle="modal" data-target="#{{entry.id}}">Read Full Review</button>
-                    {% else %}
-                    <button type="button" class="btn btn-info mt-3" data-toggle="modal" data-target="#editEntry{{entry.id}}">Edit</button>
-                    {% endif %}
-                </div>
-
-            </div> */}
+    
+        {/* </div> */}
+    {/*</div> */}
 
 
     <div className="fixed-bottom">
