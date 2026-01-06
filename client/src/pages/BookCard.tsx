@@ -3,7 +3,7 @@ import type { Book } from "../types/book";
 const DEFAULT_COVER = "src/assets/default_cover.jpg";
 function BookCard({ book, setSelectedBook }: { book: Book, setSelectedBook: (x: Book) => void }) {
     return  (
-        <div className="card border-info mr-3 mb-3" style={{width: "15rem"}}>
+        <div className="card border-info mr-3 mb-3" style={{width: "15%", minWidth: "14rem"}}>
             <img className="card-img-top" src={book.cover || DEFAULT_COVER} alt="Book Cover" onError={missingCover}/>
 
             <div className="card-body p-2" style={{textAlign: "center"}}>
