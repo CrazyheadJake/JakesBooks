@@ -1,16 +1,31 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
+import type { Book } from '../types/book';
+import type { JSX } from 'react/jsx-runtime';
+import BookCard from './BookCard';
 
 function Home({ setError }: { setError: (x: string) => void })  {
     const [ bookError, setBookError ] = useState("");
+    const [ books, setBooks ] = useState<Book[]>([]);
+    const [ bookElementList, setBookElementList ] = useState<JSX.Element[]>([]);
+    useEffect(() => {
+        fetch('/api/getBooks')
+            .then(res => res.json())
+            .then(data => setBooks(data));
+    }, []);
+    useEffect(() => {
+        books.sort((a, b) => (new Date(b.date).getTime()) - (new Date(a.date).getTime()));
+        const elements = books.map((book, index) => <BookCard book={book} key={index}/> )
+        setBookElementList(elements);
+    }, [books]);
     return (
     <><h1 style={{textAlign: "center"}}>Book Log</h1>
-    {/* <div class="container-fluid" align="date"> */}
-        {/* <div class="row"> */}
-    
-        {/* </div> */}
-    {/*</div> */}
-
+    <div className="container-fluid" style={{textAlign: "center"}}>
+        <div className="row">
+            { bookElementList }
+        </div>
+    </div>
+    <br/><br/>
 
     <div className="fixed-bottom">
         <div className="container-fluid bg-dark" style={{textAlign: "center"}}>
@@ -20,7 +35,7 @@ function Home({ setError }: { setError: (x: string) => void })  {
                         <div className="form-row">
                         <div className="form-group">
                             <select id="sorting" name="sorting" className="form-control-sm mr-1 my-1" required>
-                            <option selected disabled hidden >Sort by...</option>
+                            <option disabled hidden >Sort by...</option>
                             <option>Date</option>
                             <option>Rating</option>
                             <option>Author</option>
@@ -137,7 +152,7 @@ function Home({ setError }: { setError: (x: string) => void })  {
                     <div className="form-group col">
                         <label className="required-label" htmlFor="month">Month</label>
                         <select id="month" name="month" className="form-control" itemType="number" required={true}>
-                            <option selected value="1">January</option>
+                            <option value="1">January</option>
                             <option value="2">February</option>
                             <option value="3">March</option>
                             <option value="4">April</option>

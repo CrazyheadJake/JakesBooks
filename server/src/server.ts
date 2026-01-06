@@ -23,5 +23,6 @@ app.post("/api/login", login.login);
 app.post("/api/signup", login.signup);
 app.post("/api/logout", login.requireAuth, login.logout);
 app.post("/api/addBook", login.requireAuth, books.addBook);
+app.get("/api/getBooks", login.requireAuth, books.getBooks);
 
 app.listen(3001, () => console.log("Server running on port 3001"));

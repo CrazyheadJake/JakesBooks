@@ -19,6 +19,7 @@ async function addBook(req: Request, res: Response) {
 
     const book: Book = {
         userId: req.session.user.id,
+        cover: "",
         title: req.body.title,
         author: req.body.author,
         genre: req.body.genre,
@@ -40,4 +41,17 @@ async function addBook(req: Request, res: Response) {
     }
 }   
 
-export { addBook }
+async function getBooks(req: Request, res: Response) {
+    if (!req.session.user) throw new Error("Not logged in");    // Should never happen with checkAuth required
+    const db = await getDb();
+    try {
+        const books = await db.collection("books").find({ userId: req.session.user.id }).toArray();
+        res.status(200).json(books);
+    }
+    catch (err){
+        console.log(err);
+        return res.status(500).json({ error: "Error getting books" });
+    }
+}
+
+export { addBook, getBooks }
