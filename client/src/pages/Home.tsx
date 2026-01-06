@@ -120,6 +120,7 @@ function Home({ setError }: { setError: (x: string) => void }) {
                         <label htmlFor="seriesNumber">Number</label>
                         <input
                             type="number"
+                            step="any"
                             className="form-control"
                             id="seriesNumber"
                             name="seriesNumber"
@@ -256,7 +257,7 @@ async function addBook(e: React.FormEvent<HTMLFormElement>, setError: (x: string
     const form = e.currentTarget;
     const formData = new FormData(form);
     const rating: number = parseInt(formData.get("rating") as string);
-    const seriesNumber: number = parseInt(formData.get("seriesNumber") as string);
+    const seriesNumber: number = parseFloat(formData.get("seriesNumber") as string);
     const month: number = parseInt(formData.get("month") as string);
     const day: number = parseInt(formData.get("day") as string);
     const year: number = parseInt(formData.get("year") as string);
