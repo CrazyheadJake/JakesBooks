@@ -8,7 +8,7 @@ import Logout from "./pages/Logout"
 import './App.css'
 
 function App() {
-  const [loggedIn, setLogin] = useState(true);
+  const [loggedIn, setLogin] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {

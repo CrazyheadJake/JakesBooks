@@ -4,25 +4,33 @@ import type { Book } from '../types/book';
 import type { JSX } from 'react/jsx-runtime';
 import BookCard from './BookCard';
 
-function Home({ setError }: { setError: (x: string) => void })  {
+function Home({ setError }: { setError: (x: string) => void }) {
     const [ bookError, setBookError ] = useState("");
     const [ books, setBooks ] = useState<Book[]>([]);
-    const [ bookElementList, setBookElementList ] = useState<JSX.Element[]>([]);
+    const [ sortedBooks, setSortedBooks ] = useState<Book[]>([]);
+
+    // Fetch books on component mount
     useEffect(() => {
+        console.log("Fetching books");
         fetch('/api/getBooks')
-            .then(res => res.json())
+            .then(res => res.json() as Promise<Book[]>)
             .then(data => setBooks(data));
     }, []);
+
+    // Sort books by date whenever books change
     useEffect(() => {
-        books.sort((a, b) => (new Date(b.date).getTime()) - (new Date(a.date).getTime()));
-        const elements = books.map((book, index) => <BookCard book={book} key={index}/> )
-        setBookElementList(elements);
+        console.log("Books:", books);
+        if (books.length > 0)
+            setSortedBooks([...books].sort((a, b) => (new Date(b.date).getTime()) - (new Date(a.date).getTime())));
     }, [books]);
+
     return (
     <><h1 style={{textAlign: "center"}}>Book Log</h1>
     <div className="container-fluid" style={{textAlign: "center"}}>
         <div className="row">
-            { bookElementList }
+            {sortedBooks.map((book, index) => (
+                <BookCard book={book} key={index} />
+            ))}
         </div>
     </div>
     <br/><br/>
@@ -74,7 +82,7 @@ function Home({ setError }: { setError: (x: string) => void })  {
             </button>
         </div>
         <div className="modal-body">
-            <form onSubmit={(e) => addBook(e, setBookError)}>
+            <form onSubmit={(e) => addBook(e, setBookError, setBooks)}>
                 <div className="form-group">
                     <label className="required-label" htmlFor="title required-label">Title</label>
                     <input
@@ -243,7 +251,7 @@ function Home({ setError }: { setError: (x: string) => void })  {
     )
 }
 
-async function addBook(e: React.FormEvent<HTMLFormElement>, setError: (x: string) => void) {
+async function addBook(e: React.FormEvent<HTMLFormElement>, setError: (x: string) => void, setBooks: (x: Book[]) => void) {
     e.preventDefault();
     const form = e.currentTarget;
     const formData = new FormData(form);
@@ -292,6 +300,10 @@ async function addBook(e: React.FormEvent<HTMLFormElement>, setError: (x: string
         form.reset();
         const modalClose = document.getElementById("closeModal");
         modalClose?.click();
+
+        fetch('/api/getBooks')
+            .then(res => res.json() as Promise<Book[]>)
+            .then(data => setBooks(data));
     }
     else {
         const body = await res.json();

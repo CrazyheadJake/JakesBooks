@@ -5,7 +5,6 @@ import type { Book } from "./types/book.js";
 
 
 async function addBook(req: Request, res: Response) {
-    if (!req.session.user) throw new Error("Not logged in");    // Should never happen with checkAuth required
     console.log("addBook called");
     console.log(req.body);
     if (req.body.seriesNumber && (typeof req.body.seriesNumber !== "number" || !Number.isFinite(req.body.seriesNumber)))
@@ -18,7 +17,7 @@ async function addBook(req: Request, res: Response) {
         return res.status(400).json({ error: "Invalid date" });
 
     const book: Book = {
-        userId: req.session.user.id,
+        userId: req.session.user!.id,
         cover: "",
         title: req.body.title,
         author: req.body.author,
@@ -42,10 +41,9 @@ async function addBook(req: Request, res: Response) {
 }   
 
 async function getBooks(req: Request, res: Response) {
-    if (!req.session.user) throw new Error("Not logged in");    // Should never happen with checkAuth required
     const db = await getDb();
     try {
-        const books = await db.collection("books").find({ userId: req.session.user.id }).toArray();
+        const books = await db.collection("books").find({ userId: req.session.user!.id }).toArray();
         res.status(200).json(books);
     }
     catch (err){
