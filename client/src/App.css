@@ -1,7 +1,7 @@
 .required-label::after {
   content: " *"; /* Adds a space and an asterisk after the label text */
   color: #ff0000; /* Styles the asterisk red */
-  /* You can add more styles here, like font-size or position */
+
 }
 /* Disables the arrow for increase/decrease for number inputs
 /* 1. For Chrome, Safari, Edge, Opera */

@@ -1,9 +1,9 @@
 import type { Book } from "../types/book";
 
 const DEFAULT_COVER = "src/assets/default_cover.jpg";
-function BookCard({ book }: { book: Book }) {
+function BookCard({ book, setSelectedBook }: { book: Book, setSelectedBook: (x: Book) => void }) {
     return  (
-        <div className="card border-info mr-3 mb-3" style={{width: "14rem"}}>
+        <div className="card border-info mr-3 mb-3" style={{width: "15rem"}}>
             <img className="card-img-top" src={book.cover || DEFAULT_COVER} alt="Book Cover" onError={missingCover}/>
 
             <div className="card-body p-2" style={{textAlign: "center"}}>
@@ -28,15 +28,9 @@ function BookCard({ book }: { book: Book }) {
                 <div className="progress">
                     <div className="progress-bar" style={{width: book.rating + "%"}} role="progressbar">{ book.rating }/100</div>
                 </div>
+                <button type="button" className="btn btn-info mt-3" data-toggle="modal" data-target="#editEntry" onClick={() => setSelectedBook(book)}>Edit</button>
 
-                { book.review ? 
-                <>
-                <button type="button" className="btn btn-info mt-3" data-toggle="modal" data-target="#editEntry{{entry.id}}">Edit</button>
-                <button type="button" className="btn btn-info mt-3" data-toggle="modal" data-target="#{{entry.id}}">Read Full Review</button>
-                </> : 
-                <>
-                <button type="button" className="btn btn-info mt-3" data-toggle="modal" data-target="#editEntry{{entry.id}}">Edit</button>
-                </>}
+                {book.review && <button type="button" className="btn btn-info mt-3 ml-2" data-toggle="modal" data-target="#readReview" onClick={() => setSelectedBook(book)}>Read Full Review</button>}
             </div>
         </div>
     )

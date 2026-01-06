@@ -8,6 +8,7 @@ function Home({ setError }: { setError: (x: string) => void }) {
     const [ bookError, setBookError ] = useState("");
     const [ books, setBooks ] = useState<Book[]>([]);
     const [ sortedBooks, setSortedBooks ] = useState<Book[]>([]);
+    const [ selectedBook, setSelectedBook ] = useState<Book>(new Object() as Book);
 
     // Fetch books on component mount
     useEffect(() => {
@@ -26,10 +27,10 @@ function Home({ setError }: { setError: (x: string) => void }) {
 
     return (
     <><h1 style={{textAlign: "center"}}>Book Log</h1>
-    <div className="container-fluid" style={{textAlign: "center"}}>
-        <div className="row">
+    <div className="container-fluid">
+        <div className="row justify-content-center">
             {sortedBooks.map((book, index) => (
-                <BookCard book={book} key={index} />
+                <BookCard book={book} key={index} setSelectedBook={setSelectedBook} />
             ))}
         </div>
     </div>
@@ -248,6 +249,29 @@ function Home({ setError }: { setError: (x: string) => void }) {
         </div>
     </div>
     </div>
+
+    <div className="modal fade" id="readReview" tabIndex={-1} role="dialog">
+          <div className="modal-dialog" role="document">
+            <div className="modal-content">
+                <div className="modal-body" style={{textAlign: "left"}}>
+                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h5 className="modal-title mb-1">{ selectedBook.title}</h5>
+                    {selectedBook.series !== "" ? <>
+                    <h5 className="modal-subtitle mb-1 text-muted">by { selectedBook.author }</h5>
+                    <h6 className="modal-subtitle mb-3 text-muted">({ selectedBook.series + " #"}{ selectedBook.seriesNumber })</h6>
+                    </>:<>
+                    <h5 className="modal-subtitle mb-3 text-muted">by { selectedBook.author }</h5>
+                    </>}
+                    <br/>
+                    {selectedBook.review}
+
+                </div>
+
+            </div>
+          </div>
+        </div>
     </>
     )
 }
