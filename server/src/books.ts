@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import { getDb } from "./db.js";
-import { MongoServerError } from "mongodb";
+import { MongoServerError, ObjectId } from "mongodb";
 import type { Book } from "./types/book.js";
 
 function validateBook(req: Request, res: Response, next: NextFunction) {
@@ -31,7 +31,7 @@ function validateBook(req: Request, res: Response, next: NextFunction) {
 
 async function addBook(req: Request, res: Response) {
     console.log("addBook called");
-    const book = req.body.book;
+    const book: Book = req.body.book;
     console.log(book);
     const db = await getDb();
     try {
@@ -45,13 +45,16 @@ async function addBook(req: Request, res: Response) {
 }   
 
 async function updateBook(req: Request, res: Response) {
-    const book = req.body.book;
+    const book: Book = req.body.book;
     if (!req.body.bookId) {
         return res.status(400).json({ error: "Missing bookId" });
     }
+    const query = { _id: new ObjectId(req.body.bookId) };
+    console.log("updateBook called: " + JSON.stringify(book) + " id: " + req.body.bookId);
     const db = await getDb();
     try {
-        const updatedBook = await db.collection("books").updateOne({ _id: req.body.bookId }, { $set: book });
+        const updatedBook = await db.collection("books").updateOne(query, { $set: book });
+        console.log(updatedBook);
         return res.status(200).json({ message: "Book updated successfully" });
     }
     catch (err){

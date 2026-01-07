@@ -148,7 +148,7 @@ function BookEntry({ book, setBooks, setBook, id}: { book: Book | null, setBooks
                     {bookError && <div className="alert alert-danger">{bookError}</div>}
                 </div>
                 <div style={{textAlign: "right"}}>
-                    <button type="button" className="btn btn-secondary" id="closeModal" data-dismiss="modal">Close</button>
+                    <button type="button" className="btn btn-secondary" id={id + "-closeModal"} data-dismiss="modal">Close</button>
                     <button type="submit" className="btn btn-primary">{book ? "Save Edits" : "Add Entry"}</button>
                 </div>
             </form>
@@ -214,13 +214,19 @@ async function addBook(e: React.FormEvent<HTMLFormElement>, setError: (x: string
     }
     console.log(res);
     if (res.ok) {
-        form.reset();
-        const modalClose = document.getElementById("closeModal");
-        modalClose?.click();
+        if (currentBook) {
+            const modalClose = document.getElementById("editBookEntry-closeModal");
+            modalClose?.click();
+        }
+        else {
+            const modalClose = document.getElementById("newBookEntry-closeModal");
+            modalClose?.click();
+        }
 
-        fetch('/api/getBooks')
-            .then(res => res.json() as Promise<Book[]>)
-            .then(data => setBooks(data));
+        const res = await fetch('/api/getBooks');
+        const json = await res.json();
+        setBooks(json);
+        setTimeout(() => form.reset(), 200)
     }
     else {
         const body = await res.json();

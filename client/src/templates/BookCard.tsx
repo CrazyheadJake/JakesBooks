@@ -28,7 +28,7 @@ function BookCard({ book, setSelectedBook }: { book: Book, setSelectedBook: (x: 
                 <div className="progress">
                     <div className="progress-bar" style={{width: book.rating + "%"}} role="progressbar">{ book.rating }/100</div>
                 </div>
-                <button type="button" className="btn btn-info mt-3" data-toggle="modal" data-target="#editBookEntry" onClick={() => setSelectedBook(book)}>Edit</button>
+                <button type="button" className="btn btn-info mt-3" data-toggle="modal" data-target="#editBookEntry" onClick={() => openEdit(book, setSelectedBook)}>Edit</button>
 
                 {book.review && <button type="button" className="btn btn-info mt-3 ml-2" data-toggle="modal" data-target="#readReview" onClick={() => setSelectedBook(book)}>Read Full Review</button>}
             </div>
@@ -41,6 +41,14 @@ function missingCover(e: React.SyntheticEvent<HTMLImageElement>) {
     console.log("Missing cover image, setting to default");
     book.onerror = null;
     book.src = DEFAULT_COVER;
+}
+
+function openEdit(book: Book, setSelectedBook: (x: Book | null) => void) {
+    setSelectedBook(book);
+    const modal = document.getElementById("editBookEntry");
+    const form = modal?.getElementsByTagName("form")[0];
+    form?.reset();
+    console.log("openEdit called, form:", form);
 }
 
 export default BookCard;
