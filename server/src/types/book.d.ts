@@ -1,6 +1,7 @@
 import { ObjectId } from "mongodb";
 
 export interface Book {
+    _id?: ObjectId
     userId: ObjectId
     cover: string
     title: string

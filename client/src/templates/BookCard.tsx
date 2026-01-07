@@ -1,7 +1,7 @@
 import type { Book } from "../types/book";
 
 const DEFAULT_COVER = "src/assets/default_cover.jpg";
-function BookCard({ book, setSelectedBook }: { book: Book, setSelectedBook: (x: Book) => void }) {
+function BookCard({ book, setSelectedBook }: { book: Book, setSelectedBook: (x: Book | null) => void }) {
     return  (
         <div className="card border-info mr-3 mb-3" style={{width: "15%", minWidth: "14rem"}}>
             <img className="card-img-top" src={book.cover || DEFAULT_COVER} alt="Book Cover" onError={missingCover}/>
@@ -28,7 +28,7 @@ function BookCard({ book, setSelectedBook }: { book: Book, setSelectedBook: (x: 
                 <div className="progress">
                     <div className="progress-bar" style={{width: book.rating + "%"}} role="progressbar">{ book.rating }/100</div>
                 </div>
-                <button type="button" className="btn btn-info mt-3" data-toggle="modal" data-target="#editEntry" onClick={() => setSelectedBook(book)}>Edit</button>
+                <button type="button" className="btn btn-info mt-3" data-toggle="modal" data-target="#editBookEntry" onClick={() => setSelectedBook(book)}>Edit</button>
 
                 {book.review && <button type="button" className="btn btn-info mt-3 ml-2" data-toggle="modal" data-target="#readReview" onClick={() => setSelectedBook(book)}>Read Full Review</button>}
             </div>

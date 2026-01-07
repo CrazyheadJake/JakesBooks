@@ -3,10 +3,7 @@ import { getDb } from "./db.js";
 import { MongoServerError } from "mongodb";
 import type { Book } from "./types/book.js";
 
-
-async function addBook(req: Request, res: Response) {
-    console.log("addBook called");
-    console.log(req.body);
+function validateBook(req: Request, res: Response, next: NextFunction) {
     if (req.body.seriesNumber && (typeof req.body.seriesNumber !== "number" || !Number.isFinite(req.body.seriesNumber)))
         return res.status(400).json({ error: "Invalid seriesNumber" });
     if (typeof req.body.rating !== "number" || req.body.rating > 100 || req.body.rating < 0)
@@ -27,12 +24,19 @@ async function addBook(req: Request, res: Response) {
         rating: req.body.rating,
         date: date,
         review: req.body.review
-    }
+    };
+    req.body.book = book;
+    next();
+}
+
+async function addBook(req: Request, res: Response) {
+    console.log("addBook called");
+    const book = req.body.book;
     console.log(book);
     const db = await getDb();
     try {
         const newBook = await db.collection("books").insertOne(book);
-        res.status(201).json({ message: "Book added successfully" });
+        return res.status(201).json({ message: "Book added successfully" });
     }
     catch (err){
         console.log(err);
@@ -40,11 +44,27 @@ async function addBook(req: Request, res: Response) {
     }
 }   
 
+async function updateBook(req: Request, res: Response) {
+    const book = req.body.book;
+    if (!req.body.bookId) {
+        return res.status(400).json({ error: "Missing bookId" });
+    }
+    const db = await getDb();
+    try {
+        const updatedBook = await db.collection("books").updateOne({ _id: req.body.bookId }, { $set: book });
+        return res.status(200).json({ message: "Book updated successfully" });
+    }
+    catch (err){
+        console.log(err);
+        return res.status(500).json({ error: "Error updating book" });
+    }
+}
+
 async function getBooks(req: Request, res: Response) {
     const db = await getDb();
     try {
         const books = await db.collection("books").find({ userId: req.session.user!.id }).toArray();
-        res.status(200).json(books);
+        return res.status(200).json(books);
     }
     catch (err){
         console.log(err);
@@ -52,4 +72,4 @@ async function getBooks(req: Request, res: Response) {
     }
 }
 
-export { addBook, getBooks }
+export { addBook, getBooks, validateBook, updateBook };
