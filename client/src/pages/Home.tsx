@@ -9,6 +9,7 @@ function Home({ setError }: { setError: (x: string) => void }) {
     const [ books, setBooks ] = useState<Book[]>([]);
     const [ sortedBooks, setSortedBooks ] = useState<Book[]>([]);
     const [ selectedBook, setSelectedBook ] = useState<Book | null>(null);
+    const [ sortingMethod, setSortingMethodState ] = useState<string>(localStorage.getItem('sortingMethod') || 'date');
 
     // Fetch books on component mount
     useEffect(() => {
@@ -19,11 +20,7 @@ function Home({ setError }: { setError: (x: string) => void }) {
     }, []);
 
     // Sort books by date whenever books change
-    useEffect(() => {
-        console.log("Books:", books);
-        if (books.length > 0)
-            setSortedBooks([...books].sort((a, b) => (new Date(b.date).getTime()) - (new Date(a.date).getTime())));
-    }, [books]);
+    useEffect(() => sortBooks(books, sortingMethod, setSortedBooks), [books, sortingMethod]);
 
     return (
     <><h1 style={{textAlign: "center"}}>Book Log</h1>
@@ -40,16 +37,16 @@ function Home({ setError }: { setError: (x: string) => void }) {
         <div className="container-fluid bg-dark" style={{textAlign: "center"}}>
             <div className="row">
                 <div className="col-5">
-                    <form method="POST">
+                    <form onSubmit={(e) => setSortingMethod(e, setSortingMethodState)}>
                         <div className="form-row">
                         <div className="form-group">
-                            <select id="sorting" name="sorting" className="form-control-sm mr-1 my-1" required>
+                            <select id="sorting" name="sorting" className="form-control-sm mr-1 my-1" defaultValue={sortingMethod} required>
                             <option disabled hidden >Sort by...</option>
-                            <option>Date</option>
-                            <option>Rating</option>
-                            <option>Author</option>
-                            <option>Series</option>
-                            <option>Title</option>
+                            <option value="date">Date</option>
+                            <option value="rating">Rating</option>
+                            <option value="author">Author</option>
+                            <option value="series">Series</option>
+                            <option value="title">Title</option>
                             </select>
 
                         </div>
@@ -132,6 +129,64 @@ function Home({ setError }: { setError: (x: string) => void }) {
         </div>
     </>
     )
+}
+
+async function setSortingMethod(e: React.FormEvent<HTMLFormElement>, setSortingMethodState: (x: string) => void) {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    const sortingMethod = formData.get("sorting") as string;
+    localStorage.setItem("sortingMethod", sortingMethod);
+    setSortingMethodState(sortingMethod);
+}
+
+function sortBooks(books: Book[], sortingMethod: string, setSortedBooks: (x: Book[]) => void) {
+    console.log("Books:", books);
+    if (books.length > 0) {
+        let sortedBooks = [...books];
+        switch (sortingMethod) {
+            case "date":
+                sortedBooks.sort((a, b) => (new Date(b.date).getTime()) - (new Date(a.date).getTime()));
+                break;
+            case "rating":
+                sortedBooks.sort((a, b) => {
+                    if (b.rating === a.rating) {
+                        return new Date(b.date).getTime() - new Date(a.date).getTime();
+                    }
+                    return b.rating - a.rating;
+                });
+                break;
+            case "author":
+                sortedBooks.sort((a, b) => {
+                    if (a.author === b.author) {
+                        return a.title.localeCompare(b.title);
+                    }
+                    return a.author.localeCompare(b.author);
+                });
+                break;
+            case "series":
+                sortedBooks.sort((a, b) => {
+                    if (!a.series) {
+                        if (!b.series) {
+                            return a.title.localeCompare(b.title);
+                        }
+                        return 1;
+                    }
+                    if (!b.series) {
+                        return -1;
+                    }
+                    if (a.series === b.series) {
+                        return a.seriesNumber! - b.seriesNumber!;
+                    }
+                    return a.series.localeCompare(b.series);
+                });
+                break;
+            case "title":
+                sortedBooks.sort((a, b) => a.title.localeCompare(b.title));
+                break;
+        }
+        setSortedBooks(sortedBooks);
+    }
 }
 
 export default Home;
