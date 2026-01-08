@@ -35,8 +35,8 @@ function Home({ setError }: { setError: (x: string) => void }) {
 
     <div className="fixed-bottom">
         <div className="container-fluid bg-dark" style={{textAlign: "center"}}>
-            <div className="row">
-                <div className="col-5">
+            <div className="row no-gutters">
+                <div className="col">
                     <form onSubmit={(e) => setSortingMethod(e, setSortingMethodState)}>
                         <div className="form-row">
                         <div className="form-group">
@@ -56,12 +56,12 @@ function Home({ setError }: { setError: (x: string) => void }) {
                         </div>
                     </form>
                 </div>
-                <div className="col-4" style={{textAlign: "left"}}>
-                    <button type="button" className="btn btn-primary my-1 btn-sm" data-toggle="modal" data-target="#newBookEntry" onClick={() => setSelectedBook(null)}>
+                <div className="col" style={{textAlign: "center"}}>
+                    <button type="button" className="btn btn-primary my-1 mr-3 btn-sm" data-toggle="modal" data-target="#newBookEntry" onClick={() => setSelectedBook(null)}>
                     New Entry
                     </button>
                 </div>
-                <div className="col-3" style={{textAlign: "right"}}>
+                <div className="col" style={{textAlign: "right"}}>
                     <button type="button" className="btn btn-secondary my-1 btn-sm" data-toggle="modal" data-target="#singleLineEntry">
                     Line Entry
                     </button>
