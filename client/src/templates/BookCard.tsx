@@ -48,6 +48,11 @@ function openEdit(book: Book, setSelectedBook: (x: Book | null) => void) {
     const modal = document.getElementById("editBookEntry");
     const form = modal?.getElementsByTagName("form")[0];
     form?.reset();
+    const genreSelect = form?.querySelector("#editBookEntry-genre") as HTMLSelectElement;
+    const monthSelect = form?.querySelector("#editBookEntry-month") as HTMLSelectElement;
+    genreSelect.value = book.genre;
+    monthSelect.value = new Date(book.date).getMonth() + 1 + "";
+
     console.log("openEdit called, form:", form);
 }
 

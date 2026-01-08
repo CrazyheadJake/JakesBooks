@@ -79,7 +79,7 @@ function BookEntry({ book, setBooks, setBook, id}: { book: Book | null, setBooks
                     </div>
                     <div className="form-group col">
                         <label className="required-label" htmlFor="genre">Genre</label>
-                        <select id="genre" name="genre" className="form-control" required={true} defaultValue={book ? book.genre : "Sci-fi"}>
+                        <select id={id + "-genre"} name="genre" className="form-control" required={true}>
                             <option>Sci-fi</option>
                             <option>Fantasy</option>
                             <option>High Fantasy</option>
@@ -98,7 +98,7 @@ function BookEntry({ book, setBooks, setBook, id}: { book: Book | null, setBooks
                 <div className="form-row">
                     <div className="form-group col">
                         <label className="required-label" htmlFor="month">Month</label>
-                        <select id="month" name="month" className="form-control" itemType="number" required={true} defaultValue={book ? (new Date(book.date).getMonth() + 1) : ""}>
+                        <select id={id + "-month"} name="month" className="form-control" itemType="number" required={true} >
                             <option value="1">January</option>
                             <option value="2">February</option>
                             <option value="3">March</option>
