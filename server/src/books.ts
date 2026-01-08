@@ -75,4 +75,21 @@ async function getBooks(req: Request, res: Response) {
     }
 }
 
-export { addBook, getBooks, validateBook, updateBook };
+async function deleteBook(req: Request, res: Response) {
+    const db = await getDb();
+    if (!req.body.bookId) {
+        return res.status(400).json({ error: "Missing bookId" });
+    }
+    const query = { _id: new ObjectId(req.body.bookId) };
+    try {
+        const deletedBook = await db.collection("books").deleteOne(query);
+        console.log(deletedBook);
+        return res.status(200).json({ message: "Book deleted successfully" });
+    }
+    catch (err){
+        console.log(err);
+        return res.status(500).json({ error: "Error deleting book" });
+    }
+}
+
+export { addBook, getBooks, validateBook, updateBook, deleteBook };

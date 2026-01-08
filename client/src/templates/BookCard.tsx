@@ -2,6 +2,19 @@ import type { Book } from "../types/book";
 
 const DEFAULT_COVER = "src/assets/default_cover.jpg";
 function BookCard({ book, setSelectedBook }: { book: Book, setSelectedBook: (x: Book | null) => void }) {
+    function openEdit() {
+        setSelectedBook(book);
+        const modal = document.getElementById("editBookEntry");
+        const form = modal?.getElementsByTagName("form")[0];
+        form?.reset();
+        const genreSelect = form?.querySelector("#editBookEntry-genre") as HTMLSelectElement;
+        const monthSelect = form?.querySelector("#editBookEntry-month") as HTMLSelectElement;
+        genreSelect.value = book.genre;
+        monthSelect.value = new Date(book.date).getMonth() + 1 + "";
+
+        console.log("openEdit called, form:", form);
+    }
+
     return  (
         <div className="card border-info mr-3 mb-3" style={{width: "15%", minWidth: "14rem"}}>
             <img className="card-img-top" src={book.cover || DEFAULT_COVER} alt="Book Cover" onError={missingCover}/>
@@ -28,7 +41,7 @@ function BookCard({ book, setSelectedBook }: { book: Book, setSelectedBook: (x: 
                 <div className="progress">
                     <div className="progress-bar" style={{width: book.rating + "%"}} role="progressbar">{ book.rating }/100</div>
                 </div>
-                <button type="button" className="btn btn-info mt-3" data-toggle="modal" data-target="#editBookEntry" onClick={() => openEdit(book, setSelectedBook)}>Edit</button>
+                <button type="button" className="btn btn-info mt-3" data-toggle="modal" data-target="#editBookEntry" onClick={openEdit}>Edit</button>
 
                 {book.review && <button type="button" className="btn btn-info mt-3 ml-2" data-toggle="modal" data-target="#readReview" onClick={() => setSelectedBook(book)}>Read Full Review</button>}
             </div>
@@ -41,19 +54,6 @@ function missingCover(e: React.SyntheticEvent<HTMLImageElement>) {
     console.log("Missing cover image, setting to default");
     book.onerror = null;
     book.src = DEFAULT_COVER;
-}
-
-function openEdit(book: Book, setSelectedBook: (x: Book | null) => void) {
-    setSelectedBook(book);
-    const modal = document.getElementById("editBookEntry");
-    const form = modal?.getElementsByTagName("form")[0];
-    form?.reset();
-    const genreSelect = form?.querySelector("#editBookEntry-genre") as HTMLSelectElement;
-    const monthSelect = form?.querySelector("#editBookEntry-month") as HTMLSelectElement;
-    genreSelect.value = book.genre;
-    monthSelect.value = new Date(book.date).getMonth() + 1 + "";
-
-    console.log("openEdit called, form:", form);
 }
 
 export default BookCard;

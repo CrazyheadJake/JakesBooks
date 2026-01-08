@@ -20,7 +20,7 @@ function Home({ setError }: { setError: (x: string) => void }) {
     }, []);
 
     // Sort books by date whenever books change
-    useEffect(() => sortBooks(books, sortingMethod, setSortedBooks), [books, sortingMethod]);
+    useEffect(() => setSortedBooks(sortBooks(books, sortingMethod)), [books, sortingMethod]);
 
     return (
     <><h1 style={{textAlign: "center"}}>Book Log</h1>
@@ -140,7 +140,7 @@ async function setSortingMethod(e: React.FormEvent<HTMLFormElement>, setSortingM
     setSortingMethodState(sortingMethod);
 }
 
-function sortBooks(books: Book[], sortingMethod: string, setSortedBooks: (x: Book[]) => void) {
+function sortBooks(books: Book[], sortingMethod: string): Book[] {
     console.log("Books:", books);
     if (books.length > 0) {
         let sortedBooks = [...books];
@@ -185,8 +185,9 @@ function sortBooks(books: Book[], sortingMethod: string, setSortedBooks: (x: Boo
                 sortedBooks.sort((a, b) => a.title.localeCompare(b.title));
                 break;
         }
-        setSortedBooks(sortedBooks);
+        return sortedBooks;
     }
+    return [];
 }
 
 export default Home;

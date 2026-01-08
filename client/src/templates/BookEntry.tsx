@@ -4,6 +4,74 @@ import type { Book } from "../types/book";
 function BookEntry({ book, setBooks, setBook, id}: { book: Book | null, setBooks: (x: Book[]) => void, setBook: (x: Book | null) => void, id: string }) {
     const [ bookError, setBookError ] = useState("");
 
+    async function addBook(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        const form = e.currentTarget;
+        const newBook = parseBookForm(form);
+        if ("error" in newBook) {
+            setBookError(newBook.error);
+            return;
+        }
+        let res;
+        if (book && book._id) {
+            res = await fetch("/api/updateBook", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ bookId: book._id, ...newBook })
+            });
+        }
+        else {
+            res = await fetch("/api/addBook", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(newBook)
+            });
+        }
+        console.log(res);
+        if (res.ok) {
+            if (book) {
+                const modalClose = document.getElementById("editBookEntry-closeModal");
+                modalClose?.click();
+            }
+            else {
+                const modalClose = document.getElementById("newBookEntry-closeModal");
+                modalClose?.click();
+            }
+
+            const res = await fetch('/api/getBooks');
+            const json = await res.json();
+            setBooks(json);
+            setTimeout(() => form.reset(), 200)
+        }
+        else {
+            const body = await res.json();
+            setBookError(body.error);
+        }
+    }
+
+    async function deleteEntry() {
+        if (!book || !book._id) {
+            return;
+        }
+        const res = await fetch("/api/deleteBook", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ bookId: book._id })
+        });
+        if (res.ok) {
+            const modalClose = document.getElementById("editBookEntry-closeModal");
+            const newBooks = await fetch('/api/getBooks');
+            const json = await newBooks.json();
+            setBooks(json);
+            modalClose?.click();
+        }
+        else {
+            const body = await res.json();
+            console.log(body);
+            setBookError(body.error);
+        }
+    }
+
     return (
     <div className="modal fade" id={id} tabIndex={-1} role="dialog" key={book ? book._id : "new"}>
     <div className="modal-dialog" role="document">
@@ -15,7 +83,7 @@ function BookEntry({ book, setBooks, setBook, id}: { book: Book | null, setBooks
             </button>
         </div>
         <div className="modal-body">
-            <form onSubmit={(e) => addBook(e, setBookError, setBooks, book)}>
+            <form onSubmit={addBook}>
                 <div className="form-group">
                     <label className="required-label" htmlFor="title required-label">Title</label>
                     <input
@@ -147,9 +215,15 @@ function BookEntry({ book, setBooks, setBook, id}: { book: Book | null, setBooks
                 <div>
                     {bookError && <div className="alert alert-danger">{bookError}</div>}
                 </div>
-                <div style={{textAlign: "right"}}>
-                    <button type="button" className="btn btn-secondary" id={id + "-closeModal"} data-dismiss="modal">Close</button>
-                    <button type="submit" className="btn btn-primary">{book ? "Save Edits" : "Add Entry"}</button>
+                <div className="container p-0">
+                    <div className="row no-gutters">
+                        <div className="col">
+                            <button type="button" className="btn btn-danger" id="deleteEntry" onClick={deleteEntry}>Delete</button>
+                        </div>
+                        <div className="col"></div>
+                        <button type="button" className="btn btn-secondary mx-2" id={id + "-closeModal"} data-dismiss="modal">Close</button>
+                        <button type="submit" className="btn btn-primary">{book ? "Save Edits" : "Add Entry"}</button>
+                    </div>
                 </div>
             </form>
             </div>
@@ -159,9 +233,7 @@ function BookEntry({ book, setBooks, setBook, id}: { book: Book | null, setBooks
     );
 }
 
-async function addBook(e: React.FormEvent<HTMLFormElement>, setError: (x: string) => void, setBooks: (x: Book[]) => void, currentBook: Book | null) {
-    e.preventDefault();
-    const form = e.currentTarget;
+function parseBookForm(form: HTMLFormElement) {
     const formData = new FormData(form);
     const rating: number = parseInt(formData.get("rating") as string);
     const seriesNumber: number = parseFloat(formData.get("seriesNumber") as string);
@@ -173,19 +245,16 @@ async function addBook(e: React.FormEvent<HTMLFormElement>, setError: (x: string
     console.log(date.toLocaleDateString());
     
     if (isNaN(date.getTime()) || day < 1 || day > 31 || year < 1900) {
-        setError("Invalid date");
-        return;
+        return {error: "Invalid date"};
     }
     if (rating < 0 || rating > 100) {
-        setError("Invalid rating, must be between 0 and 100");
-        return;
+        return {error: "Invalid rating, must be between 0 and 100"};
     }
     if (formData.get("seriesNumber") != "" && isNaN(seriesNumber)) {
-        setError("Invalid series number");
-        return;
+        return {error: "Invalid series number"};
     }
 
-    const book = {
+    const newBook = {
         title: formData.get("title") as string,
         author: formData.get("author") as string,
         series: formData.get("series") as string,
@@ -197,43 +266,8 @@ async function addBook(e: React.FormEvent<HTMLFormElement>, setError: (x: string
         year: year,
         review: formData.get("review") as string,
     };
-    let res;
-    if (currentBook && currentBook._id) {
-        res = await fetch("/api/updateBook", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ bookId: currentBook._id, ...book })
-        });
-    }
-    else {
-        res = await fetch("/api/addBook", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(book)
-        });
-    }
-    console.log(res);
-    if (res.ok) {
-        if (currentBook) {
-            const modalClose = document.getElementById("editBookEntry-closeModal");
-            modalClose?.click();
-        }
-        else {
-            const modalClose = document.getElementById("newBookEntry-closeModal");
-            modalClose?.click();
-        }
-
-        const res = await fetch('/api/getBooks');
-        const json = await res.json();
-        setBooks(json);
-        setTimeout(() => form.reset(), 200)
-    }
-    else {
-        const body = await res.json();
-        setError(body.error);
-    }
-    
-
+    return newBook;
 }
+
 
 export default BookEntry;

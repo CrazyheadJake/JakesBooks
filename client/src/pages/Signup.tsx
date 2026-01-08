@@ -3,38 +3,40 @@ import { useNavigate } from 'react-router-dom';
 
 function Signup({ setLogin, setError }: { setLogin: (x: boolean) => void, setError: (x: string) => void}) {
     const navigate = useNavigate();
-        async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-            e.preventDefault();
-            setError("");
-            const form = e.currentTarget;
-            const formData = new FormData(form);
-            const email = formData.get("email") as string;
-            const password = formData.get("password1") as string;
-            const password2 = formData.get("password2") as string;
-            if (password !== password2) {
-                setError("Passwords do not match");
-                return;
-            }
-            const name = formData.get("firstName") as string;
-            console.log(email, password);
-    
-            const res = await fetch("/api/signup", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, email, password })
-            });
-    
-            if (res.ok) {
-                // Login success
-                setLogin(true);
-                navigate("/");
-            } else {
-                // Login failed
-                setLogin(false);
-                const body = await res.json();
-                setError(body.error || "Login failed");
-            }
+
+    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        setError("");
+        const form = e.currentTarget;
+        const formData = new FormData(form);
+        const email = formData.get("email") as string;
+        const password = formData.get("password1") as string;
+        const password2 = formData.get("password2") as string;
+        if (password !== password2) {
+            setError("Passwords do not match");
+            return;
         }
+        const name = formData.get("firstName") as string;
+        console.log(email, password);
+
+        const res = await fetch("/api/signup", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, email, password })
+        });
+
+        if (res.ok) {
+            // Login success
+            setLogin(true);
+            navigate("/");
+        } else {
+            // Login failed
+            setLogin(false);
+            const body = await res.json();
+            setError(body.error || "Login failed");
+        }
+    }
+    
     return (
     <>
     <form method="POST" onSubmit={handleSubmit}>
