@@ -36,11 +36,11 @@ async function addBook(req: Request, res: Response) {
     const db = await getDb();
     try {
         const newBook = await db.collection("books").insertOne(book);
-        return res.status(201).json({ message: "Book added successfully" });
+        return res.status(201).json({ message: "Book successfully added" });
     }
     catch (err){
         console.log(err);
-        return res.status(500).json({ error: "Error adding book" });
+        return res.status(500).json({ error: "There was an unexpected error while adding your book" });
     }
 }   
 
@@ -84,11 +84,11 @@ async function deleteBook(req: Request, res: Response) {
     try {
         const deletedBook = await db.collection("books").deleteOne(query);
         console.log(deletedBook);
-        return res.status(200).json({ message: "Book deleted successfully" });
+        return res.status(200).json({ message: "Book successfully deleted" });
     }
     catch (err){
         console.log(err);
-        return res.status(500).json({ error: "Error deleting book" });
+        return res.status(500).json({ error: "There was an unexpected error while deleting your book" });
     }
 }
 

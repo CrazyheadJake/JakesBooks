@@ -10,6 +10,14 @@ function Home({ setError }: { setError: (x: string) => void }) {
     const [ sortedBooks, setSortedBooks ] = useState<Book[]>([]);
     const [ selectedBook, setSelectedBook ] = useState<Book | null>(null);
     const [ sortingMethod, setSortingMethodState ] = useState<string>(localStorage.getItem('sortingMethod') || 'date');
+    const [ message, setMessage ] = useState<string>("");
+    // Close initial message on mount
+    useEffect(() => {
+        document.getElementById("closeAlert")?.click();
+    }, []);
+
+    // Add alert to DOM on message change
+    useEffect(() => addAlert(message, setMessage), [message]);
 
     // Fetch books on component mount
     useEffect(() => {
@@ -23,7 +31,10 @@ function Home({ setError }: { setError: (x: string) => void }) {
     useEffect(() => setSortedBooks(sortBooks(books, sortingMethod)), [books, sortingMethod]);
 
     return (
-    <><h1 style={{textAlign: "center"}}>Book Log</h1>
+    <>
+    <div id="alertPlaceholder">
+    </div>
+    <h1 style={{textAlign: "center"}}>Book Log</h1>
     <div className="container-fluid">
         <div className="row justify-content-center">
             {sortedBooks.map((book, index) => (
@@ -62,7 +73,7 @@ function Home({ setError }: { setError: (x: string) => void }) {
                     </button>
                 </div>
                 <div className="col" style={{textAlign: "right"}}>
-                    <button type="button" className="btn btn-secondary my-1 btn-sm" data-toggle="modal" data-target="#singleLineEntry">
+                    <button type="button" className="btn btn-secondary my-1 btn-sm" data-toggle="modal" data-target="#singleLineEntry" onClick={() => setMessage("Test")}>
                     Line Entry
                     </button>
                 </div>
@@ -70,8 +81,8 @@ function Home({ setError }: { setError: (x: string) => void }) {
         </div>
     </div>
 
-    <BookEntry setBooks={setBooks} book={selectedBook} setBook={setSelectedBook} id="newBookEntry" />
-    <BookEntry setBooks={setBooks} book={selectedBook} setBook={setSelectedBook} id="editBookEntry" />
+    <BookEntry setBooks={setBooks} book={selectedBook} setMessage={setMessage} id="newBookEntry" />
+    <BookEntry setBooks={setBooks} book={selectedBook} setMessage={setMessage} id="editBookEntry" />
 
     <div className="modal fade" id="singleLineEntry" tabIndex={-1} role="dialog">
     <div className="modal-dialog" role="document">
@@ -129,6 +140,21 @@ function Home({ setError }: { setError: (x: string) => void }) {
         </div>
     </>
     )
+}
+
+function addAlert(message: string, setMessage: (x: string) => void) {
+    // Close previous alert if it exists
+    document.getElementById("closeAlert")?.click();
+    if (message === "") return;
+
+    const alertDiv = document.createElement("div");
+    alertDiv.className = "alert alert-success alert-dismissable fade show";
+    alertDiv.innerHTML = `${message}
+    <button type="button" class="close" id="closeAlert" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>`;
+    alertDiv.onclick = () => setMessage("");
+    document.getElementById("alertPlaceholder")?.appendChild(alertDiv);
 }
 
 async function setSortingMethod(e: React.FormEvent<HTMLFormElement>, setSortingMethodState: (x: string) => void) {

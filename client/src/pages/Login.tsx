@@ -30,7 +30,7 @@ function Login({ setLogin, setError }: { setLogin: (x: boolean) => void, setErro
         }
     }
     return (
-        <><form method="POST" onSubmit={handleSubmit}>
+        <><form className="m-3" method="POST" onSubmit={handleSubmit}>
             <h3 style={{ textAlign: "center" }}>Login</h3>
             <div className="form-group">
                 <label className="required-label" htmlFor="email">Email Address</label>

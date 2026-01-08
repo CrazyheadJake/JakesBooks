@@ -8,7 +8,7 @@ import Logout from "./pages/Logout"
 import './App.css'
 
 function App() {
-  const [loggedIn, setLogin] = useState(false);
+  const [loggedIn, setLogin] = useState<boolean | null>(null);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -29,11 +29,11 @@ function App() {
   return (
     <Router>
       <Navbar isLoggedIn={loggedIn} error={error}/>
-      <div className="container-fluid">
+      <div className="container-fluid p-0">
         <Routes>
           <Route
             path="/"
-            element={loggedIn ? <Home setError={setError} />: <Navigate to="/login" replace />}
+            element={loggedIn ? <Home setError={setError} />: loggedIn !== null ? <Navigate to="/login" replace /> : <></>}
           />
           <Route path="/login" element={loggedIn ? <Navigate to="/" replace /> : <Login setLogin={setLogin} setError={setError}/>} />
           <Route path="/signup" element={loggedIn ? <Navigate to="/" replace /> : <Signup setLogin={setLogin} setError={setError}/>} />

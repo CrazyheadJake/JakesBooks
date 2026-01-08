@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Book } from "../types/book";
 
-function BookEntry({ book, setBooks, setBook, id}: { book: Book | null, setBooks: (x: Book[]) => void, setBook: (x: Book | null) => void, id: string }) {
+function BookEntry({ book, setBooks, setMessage, id}: { book: Book | null, setBooks: (x: Book[]) => void, setMessage: (x: string) => void, id: string }) {
     const [ bookError, setBookError ] = useState("");
 
     async function addBook(e: React.FormEvent<HTMLFormElement>) {
@@ -28,6 +28,7 @@ function BookEntry({ book, setBooks, setBook, id}: { book: Book | null, setBooks
             });
         }
         console.log(res);
+        const body = await res.json();
         if (res.ok) {
             if (book) {
                 const modalClose = document.getElementById("editBookEntry-closeModal");
@@ -37,14 +38,13 @@ function BookEntry({ book, setBooks, setBook, id}: { book: Book | null, setBooks
                 const modalClose = document.getElementById("newBookEntry-closeModal");
                 modalClose?.click();
             }
-
-            const res = await fetch('/api/getBooks');
-            const json = await res.json();
-            setBooks(json);
+            setMessage(body.message);
+            const bookres = await fetch('/api/getBooks');
+            const bookjson = await bookres.json();
+            setBooks(bookjson);
             setTimeout(() => form.reset(), 200)
         }
         else {
-            const body = await res.json();
             setBookError(body.error);
         }
     }
@@ -58,7 +58,10 @@ function BookEntry({ book, setBooks, setBook, id}: { book: Book | null, setBooks
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ bookId: book._id })
         });
+        const body = await res.json();
+
         if (res.ok) {
+            setMessage(body.message);
             const modalClose = document.getElementById("editBookEntry-closeModal");
             const newBooks = await fetch('/api/getBooks');
             const json = await newBooks.json();
@@ -66,7 +69,6 @@ function BookEntry({ book, setBooks, setBook, id}: { book: Book | null, setBooks
             modalClose?.click();
         }
         else {
-            const body = await res.json();
             console.log(body);
             setBookError(body.error);
         }

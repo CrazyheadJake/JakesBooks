@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from 'react'
 
-function Navbar({ isLoggedIn, error }: {isLoggedIn: boolean, error: string}) {
+function Navbar({ isLoggedIn, error }: {isLoggedIn: boolean | null, error: string}) {
 
   return (
     <><nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -20,12 +20,12 @@ function Navbar({ isLoggedIn, error }: {isLoggedIn: boolean, error: string}) {
               <Link className="nav-item nav-link" id="home" to="/">Home</Link>
               <Link className="nav-item nav-link" id="logout" to="/logout">Logout</Link>
             </>
-          ) : (
+          ) : isLoggedIn !== null ? (
             <>
               <Link className="nav-item nav-link" id="login" to="/login">Login</Link>
               <Link className="nav-item nav-link" id="signUp" to="/signup">Sign Up</Link>
             </>
-          )}
+          ) : <></>}
         </div>
       </div>
     </nav>
