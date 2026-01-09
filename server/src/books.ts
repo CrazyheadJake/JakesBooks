@@ -2,6 +2,8 @@ import type { Request, Response, NextFunction } from "express";
 import { getDb } from "./db.js";
 import { MongoServerError, ObjectId } from "mongodb";
 import type { Book } from "./types/book.js";
+import { get } from "http";
+import getCoverImageUrl from "./googlesearch.js";
 
 function validateBook(req: Request, res: Response, next: NextFunction) {
     if (req.body.seriesNumber && (typeof req.body.seriesNumber !== "number" || !Number.isFinite(req.body.seriesNumber)))
@@ -32,6 +34,7 @@ function validateBook(req: Request, res: Response, next: NextFunction) {
 async function addBook(req: Request, res: Response) {
     console.log("addBook called");
     const book: Book = req.body.book;
+    book.cover = await getCoverImageUrl(book.title, book.author);
     console.log(book);
     const db = await getDb();
     try {

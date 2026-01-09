@@ -3,6 +3,7 @@ import type { Book } from "../types/book";
 
 function BookEntry({ book, setBooks, setMessage, id}: { book: Book | null, setBooks: (x: Book[]) => void, setMessage: (x: string) => void, id: string }) {
     const [ bookError, setBookError ] = useState("");
+    const [ loading, setLoading ] = useState(false);
 
     async function addBook(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -12,6 +13,8 @@ function BookEntry({ book, setBooks, setMessage, id}: { book: Book | null, setBo
             setBookError(newBook.error);
             return;
         }
+        setLoading(true);
+        form.querySelector("[type=submit]")?.setAttribute("disabled", "true");
         let res;
         if (book && book._id) {
             res = await fetch("/api/updateBook", {
@@ -39,6 +42,7 @@ function BookEntry({ book, setBooks, setMessage, id}: { book: Book | null, setBo
                 modalClose?.click();
             }
             setMessage(body.message);
+            setBookError("");
             const bookres = await fetch('/api/getBooks');
             const bookjson = await bookres.json();
             setBooks(bookjson);
@@ -47,6 +51,8 @@ function BookEntry({ book, setBooks, setMessage, id}: { book: Book | null, setBo
         else {
             setBookError(body.error);
         }
+        form.querySelector("[type=submit]")?.removeAttribute("disabled");
+        setLoading(false);
     }
 
     async function deleteEntry() {
@@ -219,16 +225,22 @@ function BookEntry({ book, setBooks, setMessage, id}: { book: Book | null, setBo
                 </div>
                 <div className="container p-0">
                     <div className="row no-gutters">
+                        {book ? 
                         <div className="col">
                             <button type="button" className="btn btn-danger" id="deleteEntry" onClick={deleteEntry}>Delete</button>
                         </div>
+                        :  null }
                         <div className="col"></div>
                         <button type="button" className="btn btn-secondary mx-2" id={id + "-closeModal"} data-dismiss="modal">Close</button>
-                        <button type="submit" className="btn btn-primary">{book ? "Save Edits" : "Add Entry"}</button>
+                        <button type="submit" className="btn btn-primary" style={{width: "7em"}}>{loading ?
+                            <div className="spinner-border text-light" role="status" style={{width: "1.3em", height: "1.3em"}}>
+                                <span className="visually-hidden" hidden={true}>Loading...</span>
+                            </div>
+                        : book ? "Save Edits" : "Add Entry"}</button>
                     </div>
                 </div>
             </form>
-            </div>
+        </div>
         </div>
         </div>
     </div>
@@ -270,6 +282,5 @@ function parseBookForm(form: HTMLFormElement) {
     };
     return newBook;
 }
-
 
 export default BookEntry;
