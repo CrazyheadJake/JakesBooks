@@ -1,46 +1,43 @@
 import { useNavigate } from 'react-router-dom';
 
-function ResetPassword({ setError }: { setError: (x: string) => void}) {
+function ResetPassword({ setError, setLogin }: { setError: (x: string) => void, setLogin: (x: boolean) => void }) {
     const navigate = useNavigate();
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         setError("");
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const username = urlParams.get("user") || "";
+        const token = urlParams.get("token") || "";
+
         const form = e.currentTarget;
         const formData = new FormData(form);
-        const username = formData.get("email") as string;
-        const password = formData.get("password") as string;
-        console.log(username, password);
+        const password1 = formData.get("password") as string;
+        const password2 = formData.get("confirmpassword") as string;
+        if (password1 !== password2) {
+            setError("Passwords do not match");
+            return;
+        }
 
-        const res = await fetch("/api/login", {
+        const res = await fetch("/api/resetPassword", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, password })
+            body: JSON.stringify({ email: username, password: password1, token: token })
         });
 
         if (res.ok) {
-            // Login success
+            // Reset success
+            setLogin(true);
             navigate("/");
         } else {
-            // Login failed
+            // Reset failed
             const body = await res.json();
-            setError(body.error || "Login failed");
+            setError(body.error || "Failed to reset password");
         }
     }
     return (
         <><form className="m-3" method="POST" onSubmit={handleSubmit}>
-            <h3 style={{ textAlign: "center" }}>Login</h3>
-            <div className="form-group">
-                <label className="required-label" htmlFor="email">Email Address</label>
-                <input
-                    type="email"
-                    className="form-control"
-                    id="email"
-                    name="email"
-                    placeholder="Enter email"
-                    required={true}
-                />
-            </div>
-
+            <h3 style={{ textAlign: "center" }}>Reset Password</h3>
             <div className="form-group">
                 <label className="required-label" htmlFor="password">Password</label>
                 <input
@@ -52,8 +49,19 @@ function ResetPassword({ setError }: { setError: (x: string) => void}) {
                     required={true}
                 />
             </div>
+            <div className="form-group">
+                <label className="required-label" htmlFor="confirmpassword">Confirm Password</label>
+                <input
+                    type="password"
+                    className="form-control"
+                    id="confirmpassword"
+                    name="confirmpassword"
+                    placeholder="Enter password"
+                    required={true}
+                />
+            </div>
             <br />
-            <button type="submit" className="btn btn-primary">Login</button>
+            <button type="submit" className="btn btn-primary">Reset Password</button>
         </form>
         </>
     )

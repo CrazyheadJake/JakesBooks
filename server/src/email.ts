@@ -1,4 +1,6 @@
 import nodemailer from "nodemailer";
+import type { Request, Response, NextFunction } from "express";
+import type { User } from "./types/user.js";
 
 const PWResetsData: { [key: string]: string } = {};
 const DEBUG = true;
@@ -11,23 +13,29 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-async function sendPasswordResetEmail(to: string, user: string) {
-    PWResetsData[user] = Math.random().toString(36).substring(2, 15);
-    await transporter.sendMail({
+type EmailResult = {success: boolean, error?: string}
+async function sendPasswordResetEmail(to: string, user: User): Promise<EmailResult> {
+    PWResetsData[user.email] = Math.random().toString(36).substring(2, 15);
+    const info = await transporter.sendMail({
         from: process.env.GOOGLE_APP_EMAIL,
         to,
         subject: "Jake's Books Password Reset",
-        text: pswreset(user, new Date(), PWResetsData[user]),
+        html: pswreset(user, new Date(), PWResetsData[user.email]!),
     });
+    if (info.rejected.length > 0) {
+        return { success: false, error: info.rejected.join(", ") };
+    } else {
+        return { success: true };
+    }
 }
 
-function pswreset(user: string, date: Date, resetToken: string) {
-    let resetLink = `https://jakesbooks.com/reset-password?user=${encodeURIComponent(user)}&token=${encodeURIComponent(resetToken)}`;
+function pswreset(user: User, date: Date, resetToken: string) {
+    let resetLink = `https://jakesbooks.vercel.app/reset-password?user=${encodeURIComponent(user.email)}&token=${encodeURIComponent(resetToken)}`;
     if (DEBUG) {
-        resetLink = "http://localhost:5173/reset-password?user=" + encodeURIComponent(user) + "&token=" + encodeURIComponent(resetToken);
+        resetLink = "http://localhost:5173/reset-password?user=" + encodeURIComponent(user.email) + "&token=" + encodeURIComponent(resetToken);
     }
     return (
-    `<div>Dear ${user},
+    `<div>Dear ${user.firstName},
         <br/><br/>
         Thank you for contacting Jake's Books. We received a change password request at ${date.toLocaleTimeString() + " on " + date.toLocaleDateString()}.
         <br/><br/>
@@ -43,4 +51,19 @@ function pswreset(user: string, date: Date, resetToken: string) {
     </div>`);
 }
 
-export { sendPasswordResetEmail }
+function validateResetToken(req: Request, res: Response, next: NextFunction) {
+    const email = req.body.email;
+    const token = req.body.token;
+    if (PWResetsData[email] === token) {
+        next();
+    }
+    else {
+        return res.status(400).json({ error: "Invalid or expired reset token" });
+    }
+}
+
+function invalidateToken(user: User) {
+    delete PWResetsData[user.email];
+}
+
+export { sendPasswordResetEmail, validateResetToken, invalidateToken };

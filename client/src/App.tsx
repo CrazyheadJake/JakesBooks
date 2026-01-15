@@ -6,6 +6,7 @@ import Login from "./pages/Login"
 import Signup from "./pages/Signup"
 import Logout from "./pages/Logout"
 import ResetPassword from "./pages/ResetPassword"
+import RequestPasswordReset from "./pages/RequestPasswordReset"
 import './App.css'
 
 function App() {
@@ -38,8 +39,9 @@ function App() {
           />
           <Route path="/login" element={loggedIn ? <Navigate to="/" replace /> : <Login setLogin={setLogin} setError={setError}/>} />
           <Route path="/signup" element={loggedIn ? <Navigate to="/" replace /> : <Signup setLogin={setLogin} setError={setError}/>} />
-          <Route path="/logout" element={<Logout setLogin={(x: boolean) => setLogin(x)} />} />
-          <Route path="/reset-password" element={<ResetPassword setError={setError}/>} />
+          <Route path="/logout" element={<Logout setLogin={setLogin} />} />
+          <Route path="/reset-password" element={<ResetPassword setError={setError} setLogin={setLogin}/>} />
+          <Route path="/request-reset" element={<RequestPasswordReset setError={setError}/>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>

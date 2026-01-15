@@ -4,6 +4,7 @@ import type { Book } from '../types/book';
 import type { JSX } from 'react/jsx-runtime';
 import BookCard from '../templates/BookCard';
 import BookEntry from '../templates/BookEntry';
+import * as Utils from "../Utils"
 
 function Home({ setError }: { setError: (x: string) => void }) {
     const [ books, setBooks ] = useState<Book[]>([]);
@@ -17,7 +18,7 @@ function Home({ setError }: { setError: (x: string) => void }) {
     }, []);
 
     // Add alert to DOM on message change
-    useEffect(() => addAlert(message, setMessage), [message]);
+    useEffect(() => Utils.addAlert(message, setMessage), [message]);
 
     // Fetch books on component mount
     useEffect(() => {
@@ -140,21 +141,6 @@ function Home({ setError }: { setError: (x: string) => void }) {
         </div>
     </>
     )
-}
-
-function addAlert(message: string, setMessage: (x: string) => void) {
-    // Close previous alert if it exists
-    document.getElementById("closeAlert")?.click();
-    if (message === "") return;
-
-    const alertDiv = document.createElement("div");
-    alertDiv.className = "alert alert-success alert-dismissable fade show";
-    alertDiv.innerHTML = `${message}
-    <button type="button" class="close" id="closeAlert" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>`;
-    alertDiv.onclick = () => setMessage("");
-    document.getElementById("alertPlaceholder")?.appendChild(alertDiv);
 }
 
 async function setSortingMethod(e: React.FormEvent<HTMLFormElement>, setSortingMethodState: (x: string) => void) {

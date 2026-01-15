@@ -18,7 +18,7 @@ function BookEntry({ book, setBooks, setMessage, id}: { book: Book | null, setBo
         let res;
         if (book && book._id) {
             res = await fetch("/api/updateBook", {
-                method: "POST",
+                method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ bookId: book._id, ...newBook })
             });

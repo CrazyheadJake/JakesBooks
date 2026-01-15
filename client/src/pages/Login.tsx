@@ -29,6 +29,9 @@ function Login({ setLogin, setError }: { setLogin: (x: boolean) => void, setErro
             setError(body.error || "Login failed");
         }
     }
+    function resetPassword() {
+        navigate("/request-reset");
+    }
     return (
         <><form className="m-3" method="POST" onSubmit={handleSubmit}>
             <h3 style={{ textAlign: "center" }}>Login</h3>
@@ -56,7 +59,10 @@ function Login({ setLogin, setError }: { setLogin: (x: boolean) => void, setErro
                 />
             </div>
             <br />
-            <button type="submit" className="btn btn-primary">Login</button>
+            <div className="form-row">
+                <button type="submit" className="btn btn-primary">Login</button>
+                <button type="button" className="btn btn-link ml-3" onClick={resetPassword}>Forgot Password?</button>
+            </div>
         </form>
         </>
     )

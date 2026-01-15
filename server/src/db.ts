@@ -9,10 +9,10 @@ const client = new MongoClient(uri);
 let connected = false;
 
 export async function getDb() {
-  if (!connected) {
-    await client.connect();
-    connected = true;
-    console.log("Connected to MongoDB");
-  }
-  return client.db("jakesbooks-dev");
+    if (!connected) {
+        await client.connect();
+        connected = true;
+        console.log("Connected to MongoDB");
+    }
+    return client.db("jakesbooks-dev");
 }
