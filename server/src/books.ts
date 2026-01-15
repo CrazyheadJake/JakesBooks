@@ -16,7 +16,7 @@ function validateBook(req: Request, res: Response, next: NextFunction) {
         return res.status(400).json({ error: "Invalid date" });
 
     const book: Book = {
-        userId: req.session.user!.id,
+        userId: new ObjectId(req.session.user!.id),
         cover: "",
         title: req.body.title,
         author: req.body.author,
@@ -69,7 +69,7 @@ async function updateBook(req: Request, res: Response) {
 async function getBooks(req: Request, res: Response) {
     const db = await getDb();
     try {
-        const books = await db.collection("books").find({ userId: req.session.user!.id }).toArray();
+        const books = await db.collection("books").find({ userId: new ObjectId(req.session.user!.id) }).toArray();
         return res.status(200).json(books);
     }
     catch (err){

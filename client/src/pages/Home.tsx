@@ -74,9 +74,6 @@ function Home({ setError }: { setError: (x: string) => void }) {
                     </button>
                 </div>
                 <div className="col" style={{textAlign: "right"}}>
-                    <button type="button" className="btn btn-secondary my-1 btn-sm" data-toggle="modal" data-target="#singleLineEntry" onClick={() => setMessage("Test")}>
-                    Line Entry
-                    </button>
                 </div>
             </div>
         </div>
@@ -84,38 +81,6 @@ function Home({ setError }: { setError: (x: string) => void }) {
 
     <BookEntry setBooks={setBooks} book={selectedBook} setMessage={setMessage} id="newBookEntry" />
     <BookEntry setBooks={setBooks} book={selectedBook} setMessage={setMessage} id="editBookEntry" />
-
-    <div className="modal fade" id="singleLineEntry" tabIndex={-1} role="dialog">
-    <div className="modal-dialog" role="document">
-        <div className="modal-content">
-        <div className="modal-header">
-            <h5 className="modal-title">New Book Entry</h5>
-            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <div className="modal-body">
-            <form method="POST">
-                <div className="form-group">
-                    <label className="required-label" htmlFor="lineEntries">Single Line Entries</label>
-                    <textarea className="form-control" name="lineEntries" id="lineEntries" rows={12} required></textarea>
-                    <small id="lineEntryHelper1" className="form-text text-muted">Please enter each entry on a single line in the form:</small>
-                    <small id="lineEntryHelper2" className="form-text text-muted">Rating Title (Series name #number in series) by Author (Date Finished)</small>
-                    <small id="lineEntryHelper3" className="form-text text-muted">Rating should be on a 0-100 scale. For example, some valid entries would be:</small>
-                    <small id="lineEntryHelper4" className="form-text text-muted">92 The Well of Ascension (Mistborn #2) by Brandon Sanderson (2/23/21)</small>
-                    <small id="lineEntryHelper5" className="form-text text-muted">95 The Original by Brandon Sanderson and Mary Robinette Kowal (3/16/21)</small>
-                    <small id="lineEntryHelper6" className="form-text text-muted">88 To Sleep in A Sea of Stars by Christopher Paolini (10/4/20)</small>
-
-                </div>
-                <div style={{textAlign: "right"}}>
-                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" className="btn btn-primary">Add Entry</button>
-                </div>
-            </form>
-        </div>
-        </div>
-    </div>
-    </div>
 
     <div className="modal fade" id="readReview" tabIndex={-1} role="dialog">
           <div className="modal-dialog" role="document">
