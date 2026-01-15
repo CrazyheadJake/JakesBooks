@@ -45,7 +45,7 @@ async function login(req: Request, res: Response) {
     const user = await db.collection("users").findOne({ email: username });
     console.log("DB user:", user);
     console.log("DB password:", password);
-    if (!user || !bcrypt.compareSync(password, user.password)) {
+    if (!user || !user.password || !bcrypt.compareSync(password, user.password)) {
         return res.status(401).json({ error: "Invalid username or password" });
     }
 
