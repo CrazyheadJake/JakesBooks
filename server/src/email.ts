@@ -43,8 +43,6 @@ function pswreset(user: User, date: Date, resetToken: string) {
         <br/><br/>
         Please do not reply to this email.
         <br/><br/>
-        Thank you for being our customer.
-        <br/><br/>
         Sincerely,
         <br/><br/>
         Jake's Books
