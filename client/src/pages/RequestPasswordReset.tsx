@@ -1,6 +1,7 @@
 import { useState, useEffect, use } from 'react'
 import { useNavigate } from 'react-router-dom';
 import * as Utils from "../Utils"
+const API_URL = import.meta.env.API_URL;
 
 function RequestPasswordReset({ setError }: { setError: (x: string) => void}) {
     const [ message, setMessage ] = useState("");
@@ -13,7 +14,7 @@ function RequestPasswordReset({ setError }: { setError: (x: string) => void}) {
         const submitButton = form.querySelector("[type=submit]")
         submitButton?.setAttribute("disabled", "true");
 
-        const res = await fetch("/api/requestPasswordReset", {
+        const res = await fetch(API_URL + "/api/requestPasswordReset", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email })

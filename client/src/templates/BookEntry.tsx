@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import type { Book } from "../types/book";
+const API_URL = import.meta.env.API_URL;
 
 function BookEntry({ book, setBooks, setMessage, id}: { book: Book | null, setBooks: (x: Book[]) => void, setMessage: (x: string) => void, id: string }) {
     const [ bookError, setBookError ] = useState("");
@@ -17,14 +18,14 @@ function BookEntry({ book, setBooks, setMessage, id}: { book: Book | null, setBo
         form.querySelector("[type=submit]")?.setAttribute("disabled", "true");
         let res;
         if (book && book._id) {
-            res = await fetch("/api/updateBook", {
+            res = await fetch(API_URL + "/api/updateBook", {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ bookId: book._id, ...newBook })
             });
         }
         else {
-            res = await fetch("/api/addBook", {
+            res = await fetch(API_URL + "/api/addBook", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(newBook)
@@ -59,7 +60,7 @@ function BookEntry({ book, setBooks, setMessage, id}: { book: Book | null, setBo
         if (!book || !book._id) {
             return;
         }
-        const res = await fetch("/api/deleteBook", {
+        const res = await fetch(API_URL + "/api/deleteBook", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ bookId: book._id })
@@ -69,7 +70,7 @@ function BookEntry({ book, setBooks, setMessage, id}: { book: Book | null, setBo
         if (res.ok) {
             setMessage(body.message);
             const modalClose = document.getElementById("editBookEntry-closeModal");
-            const newBooks = await fetch('/api/getBooks');
+            const newBooks = await fetch(API_URL + '/api/getBooks');
             const json = await newBooks.json();
             setBooks(json);
             modalClose?.click();

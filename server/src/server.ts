@@ -30,4 +30,8 @@ app.post("/api/deleteBook", login.requireAuth, books.deleteBook);
 app.post("/api/resetPassword", email.validateResetToken, login.resetPassword);
 app.post("/api/requestPasswordReset", login.requestPasswordReset);
 
-app.listen(3001, () => console.log("Server running on port 3001"));
+if (process.env.NODE_ENV === "development") {
+    app.listen(3001, () => console.log("Server running on port 3001"));
+}
+
+export default app;

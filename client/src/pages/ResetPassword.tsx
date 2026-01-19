@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+const API_URL = import.meta.env.API_URL;
 
 function ResetPassword({ setError, setLogin }: { setError: (x: string) => void, setLogin: (x: boolean) => void }) {
     const navigate = useNavigate();
@@ -19,7 +20,7 @@ function ResetPassword({ setError, setLogin }: { setError: (x: string) => void, 
             return;
         }
 
-        const res = await fetch("/api/resetPassword", {
+        const res = await fetch(API_URL + "/api/resetPassword", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email: username, password: password1, token: token })

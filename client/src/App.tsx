@@ -8,6 +8,7 @@ import Logout from "./pages/Logout"
 import ResetPassword from "./pages/ResetPassword"
 import RequestPasswordReset from "./pages/RequestPasswordReset"
 import './App.css'
+const API_URL = import.meta.env.API_URL;
 
 function App() {
   const [loggedIn, setLogin] = useState<boolean | null>(null);
@@ -15,7 +16,7 @@ function App() {
 
   useEffect(() => {
     async function checkAuth() {
-      const res = await fetch("/api/checkAuth", {
+      const res = await fetch(API_URL + "/api/checkAuth", {
         credentials: "include"
       });
       const data = await res.json();

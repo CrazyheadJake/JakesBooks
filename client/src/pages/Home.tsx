@@ -5,6 +5,7 @@ import type { JSX } from 'react/jsx-runtime';
 import BookCard from '../templates/BookCard';
 import BookEntry from '../templates/BookEntry';
 import * as Utils from "../Utils"
+const API_URL = import.meta.env.API_URL;
 
 function Home({ setError }: { setError: (x: string) => void }) {
     const [ books, setBooks ] = useState<Book[]>([]);
@@ -23,7 +24,7 @@ function Home({ setError }: { setError: (x: string) => void }) {
     // Fetch books on component mount
     useEffect(() => {
         console.log("Fetching books");
-        fetch('/api/getBooks')
+        fetch(API_URL + '/api/getBooks')
             .then(res => res.json() as Promise<Book[]>)
             .then(data => setBooks(data));
     }, []);

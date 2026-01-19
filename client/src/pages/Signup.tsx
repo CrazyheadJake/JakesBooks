@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
+const API_URL = import.meta.env.API_URL;
 
 function Signup({ setLogin, setError }: { setLogin: (x: boolean) => void, setError: (x: string) => void}) {
     const navigate = useNavigate();
@@ -19,7 +20,7 @@ function Signup({ setLogin, setError }: { setLogin: (x: boolean) => void, setErr
         const name = formData.get("firstName") as string;
         console.log(email, password);
 
-        const res = await fetch("/api/signup", {
+        const res = await fetch(API_URL + "/api/signup", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ name, email, password })
