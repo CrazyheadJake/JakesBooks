@@ -8,7 +8,7 @@ import Logout from "./pages/Logout"
 import ResetPassword from "./pages/ResetPassword"
 import RequestPasswordReset from "./pages/RequestPasswordReset"
 import './App.css'
-const API_URL = import.meta.env.API_URL;
+const API_URL = import.meta.env.VITE_API_URL;
 
 function App() {
   const [loggedIn, setLogin] = useState<boolean | null>(null);
@@ -16,6 +16,7 @@ function App() {
 
   useEffect(() => {
     async function checkAuth() {
+      console.log("Api url:" + API_URL);
       const res = await fetch(API_URL + "/api/checkAuth", {
         credentials: "include"
       });
@@ -36,7 +37,7 @@ function App() {
         <Routes>
           <Route
             path="/"
-            element={loggedIn ? <Home setError={setError} />: loggedIn !== null ? <Navigate to="/login" replace /> : <></>}
+            element={loggedIn ? <Home/>: loggedIn !== null ? <Navigate to="/login" replace /> : <></>}
           />
           <Route path="/login" element={loggedIn ? <Navigate to="/" replace /> : <Login setLogin={setLogin} setError={setError}/>} />
           <Route path="/signup" element={loggedIn ? <Navigate to="/" replace /> : <Signup setLogin={setLogin} setError={setError}/>} />

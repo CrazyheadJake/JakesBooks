@@ -1,13 +1,11 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom';
 import type { Book } from '../types/book';
-import type { JSX } from 'react/jsx-runtime';
 import BookCard from '../templates/BookCard';
 import BookEntry from '../templates/BookEntry';
 import * as Utils from "../Utils"
-const API_URL = import.meta.env.API_URL;
+const API_URL = import.meta.env.VITE_API_URL;
 
-function Home({ setError }: { setError: (x: string) => void }) {
+function Home() {
     const [ books, setBooks ] = useState<Book[]>([]);
     const [ sortedBooks, setSortedBooks ] = useState<Book[]>([]);
     const [ selectedBook, setSelectedBook ] = useState<Book | null>(null);
@@ -19,12 +17,16 @@ function Home({ setError }: { setError: (x: string) => void }) {
     }, []);
 
     // Add alert to DOM on message change
-    useEffect(() => Utils.addAlert(message, setMessage), [message]);
+    useEffect(() => Utils.addAlert(message), [message]);
 
     // Fetch books on component mount
     useEffect(() => {
         console.log("Fetching books");
-        fetch(API_URL + '/api/getBooks')
+        fetch(API_URL + '/api/getBooks' , {
+            method: 'GET',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' }
+        })
             .then(res => res.json() as Promise<Book[]>)
             .then(data => setBooks(data));
     }, []);

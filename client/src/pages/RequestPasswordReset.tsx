@@ -1,10 +1,7 @@
-import { useState, useEffect, use } from 'react'
-import { useNavigate } from 'react-router-dom';
 import * as Utils from "../Utils"
-const API_URL = import.meta.env.API_URL;
+const API_URL = import.meta.env.VITE_API_URL;
 
 function RequestPasswordReset({ setError }: { setError: (x: string) => void}) {
-    const [ message, setMessage ] = useState("");
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         setError("");
@@ -17,11 +14,12 @@ function RequestPasswordReset({ setError }: { setError: (x: string) => void}) {
         const res = await fetch(API_URL + "/api/requestPasswordReset", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
+            credentials: "include",
             body: JSON.stringify({ email })
         });
 
         if (res.ok) {
-            Utils.addAlert("Password reset email has been sent", setMessage, "alert-primary")
+            Utils.addAlert("Password reset email has been sent", "alert-primary")
         } else {
             const body = await res.json();
             setError(body.error || "Login failed");

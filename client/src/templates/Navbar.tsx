@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { useState, useEffect } from 'react'
 
 function Navbar({ isLoggedIn, error }: {isLoggedIn: boolean | null, error: string}) {
 

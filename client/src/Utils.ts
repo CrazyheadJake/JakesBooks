@@ -1,4 +1,4 @@
-function addAlert(message: string, setMessage: (x: string) => void, type: string = "alert-success") {
+function addAlert(message: string, type: string = "alert-success") {
     // Close previous alert if it exists
     document.getElementById("closeAlert")?.click();
     if (message === "") return;
@@ -9,7 +9,6 @@ function addAlert(message: string, setMessage: (x: string) => void, type: string
     <button type="button" class="close" id="closeAlert" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
     </button>`;
-    alertDiv.onclick = () => setMessage("");
     document.getElementById("alertPlaceholder")?.appendChild(alertDiv);
 }
 

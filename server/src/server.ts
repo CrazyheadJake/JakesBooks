@@ -8,7 +8,13 @@ import * as books from "./books.js";
 import * as email from "./email.js";
 
 const app = express();
-app.use(cors()); // allow all origins (fine for dev)
+const corsOptions = {
+  // Replace with your frontend's exact URL (no trailing slash)
+  origin: process.env.CORS_ORIGIN!, 
+  credentials: true,
+};
+console.log("Cors origin:", process.env.CORS_ORIGIN);
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(
     session({
