@@ -56,6 +56,15 @@ async function updateBook(req: Request, res: Response) {
     console.log("updateBook called: " + JSON.stringify(book) + " id: " + req.body.bookId);
     const db = await getDb();
     try {
+        // Update cover image only if title or author changed
+        const oldBook = await db.collection("books").findOne(query);
+        if (oldBook) {
+            if (oldBook.title !== book.title || oldBook.author !== book.author) {
+                book.cover = await getCoverImageUrl(book.title, book.author);
+            } else {
+                book.cover = oldBook.cover;
+            }
+        }
         const updatedBook = await db.collection("books").updateOne(query, { $set: book });
         console.log(updatedBook);
         return res.status(200).json({ message: "Book updated successfully" });
