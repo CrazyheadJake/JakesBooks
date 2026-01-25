@@ -1,6 +1,7 @@
 import type { Book } from "../types/book";
 
-const DEFAULT_COVER = "src/assets/default_cover.jpg";
+import DEFAULT_COVER from "../assets/default_cover.jpg";
+
 function BookCard({ book, setSelectedBook }: { book: Book, setSelectedBook: (x: Book | null) => void }) {
     function openEdit() {
         setSelectedBook(book);
