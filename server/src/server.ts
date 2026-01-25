@@ -8,12 +8,16 @@ import * as books from "./books.js";
 import * as email from "./email.js";
 
 const app = express();
+app.set("trust proxy", 1); // Trust Vercel proxy
+
 const corsOptions = {
   // Replace with your frontend's exact URL (no trailing slash)
   origin: process.env.CORS_ORIGIN!, 
   credentials: true,
 };
 console.log("Cors origin:", process.env.CORS_ORIGIN);
+const isProduction = process.env.NODE_ENV === "production";
+
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(
@@ -21,7 +25,11 @@ app.use(
         secret: process.env.SESSION_SECRET!,
         resave: false,
         saveUninitialized: false,
-        cookie: { httpOnly: true } // no maxAge for indefinite session
+        cookie: { 
+            httpOnly: true,
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax",
+         } // no maxAge for indefinite session
     })
 );
 
