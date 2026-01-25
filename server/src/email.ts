@@ -1,9 +1,11 @@
 import nodemailer from "nodemailer";
 import type { Request, Response, NextFunction } from "express";
 import type { User } from "./types/user.js";
+import dotenv from "dotenv";
+dotenv.config();
+const CORS_ORIGIN = process.env.CORS_ORIGIN!;
 
 const PWResetsData: { [key: string]: string } = {};
-const DEBUG = true;
 
 const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -30,10 +32,7 @@ async function sendPasswordResetEmail(to: string, user: User): Promise<EmailResu
 }
 
 function pswreset(user: User, date: Date, resetToken: string) {
-    let resetLink = `https://jakesbooks.vercel.app/reset-password?user=${encodeURIComponent(user.email)}&token=${encodeURIComponent(resetToken)}`;
-    if (DEBUG) {
-        resetLink = "http://localhost:5173/reset-password?user=" + encodeURIComponent(user.email) + "&token=" + encodeURIComponent(resetToken);
-    }
+    const resetLink = `${CORS_ORIGIN}/reset-password?user=${encodeURIComponent(user.email)}&token=${encodeURIComponent(resetToken)}`;
     return (
     `<div>Dear ${user.firstName},
         <br/><br/>
