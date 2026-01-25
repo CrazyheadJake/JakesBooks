@@ -11,7 +11,7 @@ function validateBook(req: Request, res: Response, next: NextFunction) {
     if (typeof req.body.rating !== "number" || req.body.rating > 100 || req.body.rating < 0)
         return res.status(400).json({ error: "Invalid rating" });
 
-    const date: Date = new Date(req.body.year, req.body.month - 1, req.body.day);
+    const date: Date = new Date(Date.UTC(req.body.year, req.body.month - 1, req.body.day, 12, 0, 0));
     if (isNaN(date.getTime())) 
         return res.status(400).json({ error: "Invalid date" });
 
