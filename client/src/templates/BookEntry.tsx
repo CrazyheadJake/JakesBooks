@@ -46,7 +46,7 @@ function BookEntry({ book, setBooks, setMessage, id}: { book: Book | null, setBo
             }
             setMessage(body.message);
             setBookError("");
-            const bookres = await fetch('/api/getBooks', { credentials: "include" });
+            const bookres = await fetch(API_URL + '/api/getBooks', { credentials: "include" });
             const bookjson = await bookres.json();
             setBooks(bookjson);
             setTimeout(() => form.reset(), 200)
