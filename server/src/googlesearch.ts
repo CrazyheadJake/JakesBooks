@@ -1,3 +1,4 @@
+// Searches google images and returns the URL of the first result of "title by author"
 async function getCoverImageUrl(title: string, author: string): Promise<string> {
     const apiKey = process.env.GOOGLE_API_KEY;
     const cx = process.env.GOOGLE_CX;

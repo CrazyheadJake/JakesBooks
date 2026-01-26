@@ -11,7 +11,6 @@ const app = express();
 app.set("trust proxy", 1); // Trust Vercel proxy
 
 const corsOptions = {
-  // Replace with your frontend's exact URL (no trailing slash)
   origin: process.env.CORS_ORIGIN!, 
   credentials: true,
 };
