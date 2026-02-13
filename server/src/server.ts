@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import express from "express";
 import session from "express-session";
+import MongoStore from "connect-mongo";
 import cors from "cors";
 import * as login from "./login.js";
 import * as books from "./books.js";
@@ -24,6 +25,7 @@ app.use(
         secret: process.env.SESSION_SECRET!,
         resave: false,
         saveUninitialized: false,
+        store: MongoStore.create({ mongoUrl: process.env.MONGO_URI! }),
         cookie: { 
             httpOnly: true,
             secure: isProduction,
