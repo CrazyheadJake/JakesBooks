@@ -1,5 +1,4 @@
 import * as Utils from "../Utils"
-const API_URL = import.meta.env.VITE_API_URL;
 
 function RequestPasswordReset({ setError }: { setError: (x: string) => void}) {
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -11,7 +10,7 @@ function RequestPasswordReset({ setError }: { setError: (x: string) => void}) {
         const submitButton = form.querySelector("[type=submit]")
         submitButton?.setAttribute("disabled", "true");
 
-        const res = await fetch(API_URL + "/api/requestPasswordReset", {
+        const res = await fetch("/api/requestPasswordReset", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",

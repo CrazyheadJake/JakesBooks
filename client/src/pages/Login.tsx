@@ -1,6 +1,4 @@
 import { useNavigate } from 'react-router-dom';
-const API_URL = import.meta.env.VITE_API_URL;
-
 
 function Login({ setLogin, setError }: { setLogin: (x: boolean) => void, setError: (x: string) => void}) {
     const navigate = useNavigate();
@@ -13,7 +11,7 @@ function Login({ setLogin, setError }: { setLogin: (x: boolean) => void, setErro
         const password = formData.get("password") as string;
         console.log(username, password);
 
-        const res = await fetch(API_URL + "/api/login", {
+        const res = await fetch("/api/login", {
             method: "POST",
             credentials: "include",
             headers: { "Content-Type": "application/json" },

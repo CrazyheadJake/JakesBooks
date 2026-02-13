@@ -1,6 +1,5 @@
 import { useState } from "react";
 import type { Book } from "../types/book";
-const API_URL = import.meta.env.VITE_API_URL;
 
 function BookEntry({ book, setBooks, setMessage, id}: { book: Book | null, setBooks: (x: Book[]) => void, setMessage: (x: string) => void, id: string }) {
     const [ bookError, setBookError ] = useState("");
@@ -18,7 +17,7 @@ function BookEntry({ book, setBooks, setMessage, id}: { book: Book | null, setBo
         form.querySelector("[type=submit]")?.setAttribute("disabled", "true");
         let res;
         if (book && book._id) {
-            res = await fetch(API_URL + "/api/updateBook", {
+            res = await fetch("/api/updateBook", {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
@@ -26,7 +25,7 @@ function BookEntry({ book, setBooks, setMessage, id}: { book: Book | null, setBo
             });
         }
         else {
-            res = await fetch(API_URL + "/api/addBook", {
+            res = await fetch("/api/addBook", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
@@ -46,7 +45,7 @@ function BookEntry({ book, setBooks, setMessage, id}: { book: Book | null, setBo
             }
             setMessage(body.message);
             setBookError("");
-            const bookres = await fetch(API_URL + '/api/getBooks', { credentials: "include" });
+            const bookres = await fetch("/api/getBooks", { credentials: "include" });
             const bookjson = await bookres.json();
             setBooks(bookjson);
             setTimeout(() => form.reset(), 200)
@@ -62,7 +61,7 @@ function BookEntry({ book, setBooks, setMessage, id}: { book: Book | null, setBo
         if (!book || !book._id) {
             return;
         }
-        const res = await fetch(API_URL + "/api/deleteBook", {
+        const res = await fetch("/api/deleteBook", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
@@ -73,7 +72,7 @@ function BookEntry({ book, setBooks, setMessage, id}: { book: Book | null, setBo
         if (res.ok) {
             setMessage(body.message);
             const modalClose = document.getElementById("editBookEntry-closeModal");
-            const newBooks = await fetch(API_URL + '/api/getBooks', { credentials: "include"});
+            const newBooks = await fetch("/api/getBooks", { credentials: "include"});
             const json = await newBooks.json();
             setBooks(json);
             modalClose?.click();

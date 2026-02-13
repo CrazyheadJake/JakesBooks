@@ -3,7 +3,6 @@ import type { Book } from '../types/book';
 import BookCard from '../templates/BookCard';
 import BookEntry from '../templates/BookEntry';
 import * as Utils from "../Utils"
-const API_URL = import.meta.env.VITE_API_URL;
 
 function Home() {
     const [ books, setBooks ] = useState<Book[]>([]);
@@ -22,7 +21,7 @@ function Home() {
     // Fetch books on component mount
     useEffect(() => {
         console.log("Fetching books");
-        fetch(API_URL + '/api/getBooks' , {
+        fetch('/api/getBooks' , {
             method: 'GET',
             credentials: 'include',
             headers: { 'Content-Type': 'application/json' }
