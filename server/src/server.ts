@@ -32,16 +32,16 @@ app.use(
     })
 );
 
-app.get("/api/checkAuth", login.checkAuth);
-app.post("/api/login", login.login);
-app.post("/api/signup", login.signup);
-app.post("/api/logout", login.requireAuth, login.logout);
-app.post("/api/addBook", login.requireAuth, books.validateBook, books.addBook);
-app.put("/api/updateBook", login.requireAuth, books.validateBook, books.updateBook);
-app.get("/api/getBooks", login.requireAuth, books.getBooks);
-app.post("/api/deleteBook", login.requireAuth, books.deleteBook);
-app.post("/api/resetPassword", email.validateResetToken, login.resetPassword);
-app.post("/api/requestPasswordReset", login.requestPasswordReset);
+app.get("/checkAuth", login.checkAuth);
+app.post("/login", login.login);
+app.post("/signup", login.signup);
+app.post("/logout", login.requireAuth, login.logout);
+app.post("/addBook", login.requireAuth, books.validateBook, books.addBook);
+app.put("/updateBook", login.requireAuth, books.validateBook, books.updateBook);
+app.get("/getBooks", login.requireAuth, books.getBooks);
+app.post("/deleteBook", login.requireAuth, books.deleteBook);
+app.post("/resetPassword", email.validateResetToken, login.resetPassword);
+app.post("/requestPasswordReset", login.requestPasswordReset);
 
 if (process.env.NODE_ENV === "development") {
     app.listen(3001, () => console.log("Server running on port 3001"));
