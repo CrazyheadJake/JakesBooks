@@ -1,17 +1,14 @@
 export default function middleware(request: Request) {
     const url = new URL(request.url);
-    console.log("Middleware triggered for URL:", url.pathname);
 
     // Check if the request is going to /api
     if (url.pathname.startsWith('/api')) {
         const backendUrl = process.env.API_URL!;
-        console.log("Backend URL:", backendUrl);
 
         // Construct the new destination URL
         // This takes the path after /api and appends it to your backend URL
         const targetPath = url.pathname.replace(/^\/api/, '');
         const targetUrl = new URL(targetPath + url.search, backendUrl);
-        console.log("Rewriting to:", targetUrl.toString());
         
         // Perform the rewrite
         return fetch(targetUrl.toString(), {
