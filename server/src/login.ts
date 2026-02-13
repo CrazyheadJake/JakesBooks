@@ -98,7 +98,9 @@ async function requestPasswordReset(req: Request, res: Response) {
     if (!user) {
         return res.status(404).json({ error: "User not found" });
     }
+    console.log("Requesting password reset for user:", user);
     const emailres = await Email.sendPasswordResetEmail(email, user as User);
+    console.log("Email result:", emailres);
     if (emailres.success) {
         return res.status(200).json({ message: "Password reset email succesfully sent to " + email})
     }
