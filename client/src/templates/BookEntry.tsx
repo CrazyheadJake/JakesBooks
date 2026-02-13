@@ -179,18 +179,18 @@ function BookEntry({ book, setBooks, setMessage, id}: { book: Book | null, setBo
                     <div className="form-group col">
                         <label className="required-label" htmlFor="month">Month</label>
                         <select id={id + "-month"} name="month" className="form-control" itemType="number" required={true} >
-                            <option value="1">January</option>
-                            <option value="2">February</option>
-                            <option value="3">March</option>
-                            <option value="4">April</option>
-                            <option value="5">May</option>
-                            <option value="6">June</option>
-                            <option value="7">July</option>
-                            <option value="8">August</option>
-                            <option value="9">September</option>
-                            <option value="10">October</option>
-                            <option value="11">November</option>
-                            <option value="12">December</option>
+                            <option value="1" selected={book ? new Date(book.date).getMonth() === 0 : true}>January</option>
+                            <option value="2" selected={book ? new Date(book.date).getMonth() === 1 : false}>February</option>
+                            <option value="3" selected={book ? new Date(book.date).getMonth() === 2 : false}>March</option>
+                            <option value="4" selected={book ? new Date(book.date).getMonth() === 3 : false}>April</option>
+                            <option value="5" selected={book ? new Date(book.date).getMonth() === 4 : false}>May</option>
+                            <option value="6" selected={book ? new Date(book.date).getMonth() === 5 : false}>June</option>
+                            <option value="7" selected={book ? new Date(book.date).getMonth() === 6 : false}>July</option>
+                            <option value="8" selected={book ? new Date(book.date).getMonth() === 7 : false}>August</option>
+                            <option value="9" selected={book ? new Date(book.date).getMonth() === 8 : false}>September</option>
+                            <option value="10" selected={book ? new Date(book.date).getMonth() === 9 : false}>October</option>
+                            <option value="11" selected={book ? new Date(book.date).getMonth() === 10 : false}>November</option>
+                            <option value="12" selected={book ? new Date(book.date).getMonth() === 11 : false}>December</option>
                         </select>
                     </div>
 
