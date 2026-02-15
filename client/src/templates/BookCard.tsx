@@ -52,7 +52,7 @@ function BookCard({ book, setSelectedBook }: { book: Book, setSelectedBook: (x: 
 
 function missingCover(e: React.SyntheticEvent<HTMLImageElement>) {
     const book = e.currentTarget;
-    console.log("Missing cover image, setting to default");
+    console.log("Cover image: ", book.src, " missing, setting to default");
     book.onerror = null;
     book.src = DEFAULT_COVER;
 }

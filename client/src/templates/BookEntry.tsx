@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { Book } from "../types/book";
 
 function BookEntry({ book, setBooks, setMessage, id}: { book: Book | null, setBooks: (x: Book[]) => void, setMessage: (x: string) => void, id: string }) {
     const [ bookError, setBookError ] = useState("");
     const [ loading, setLoading ] = useState(false);
+    const reloadBtnRef = useRef<HTMLButtonElement>(null);
 
     async function addBook(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -17,11 +18,13 @@ function BookEntry({ book, setBooks, setMessage, id}: { book: Book | null, setBo
         form.querySelector("[type=submit]")?.setAttribute("disabled", "true");
         let res;
         if (book && book._id) {
+            const reloadButton = reloadBtnRef.current;
+            const reloadCover = reloadButton?.classList.contains("active") || false;
             res = await fetch("/api/updateBook", {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
-                body: JSON.stringify({ bookId: book._id, ...newBook })
+                body: JSON.stringify({ bookId: book._id, reloadCover, ...newBook })
             });
         }
         else {
@@ -95,7 +98,7 @@ function BookEntry({ book, setBooks, setMessage, id}: { book: Book | null, setBo
         </div>
         <div className="modal-body">
             <form onSubmit={addBook}>
-                <div className="form-group">
+                <div className="form-group mb-2">
                     <label className="required-label" htmlFor="title required-label">Title</label>
                     <input
                         type="text"
@@ -107,7 +110,7 @@ function BookEntry({ book, setBooks, setMessage, id}: { book: Book | null, setBo
                         defaultValue={book ? book.title : ""}
                     />
                 </div>
-                <div className="form-group">
+                <div className="form-group mb-2">
                     <label className="required-label" htmlFor="author">Author</label>
                     <input
                         type="text"
@@ -120,7 +123,7 @@ function BookEntry({ book, setBooks, setMessage, id}: { book: Book | null, setBo
                     />
                 </div>
                 <div className="form-row">
-                    <div className="form-group col-9">
+                    <div className="form-group col-9 mb-2">
                         <label htmlFor="series">Series</label>
                         <input
                             type="text"
@@ -131,7 +134,7 @@ function BookEntry({ book, setBooks, setMessage, id}: { book: Book | null, setBo
                             defaultValue={book ? book.series : ""}
                         />
                     </div>
-                    <div className="form-group col-3">
+                    <div className="form-group col-3 mb-2">
                         <label htmlFor="seriesNumber">Number</label>
                         <input
                             type="number"
@@ -144,7 +147,7 @@ function BookEntry({ book, setBooks, setMessage, id}: { book: Book | null, setBo
                     </div>
                 </div>
                 <div className="form-row">
-                    <div className="form-group col-3">
+                    <div className="form-group col-3 mb-2">
                         <label className="required-label" htmlFor="rating" >Rating</label>
                         <input
                             type="number"
@@ -156,7 +159,7 @@ function BookEntry({ book, setBooks, setMessage, id}: { book: Book | null, setBo
                             defaultValue={book ? book.rating : ""}
                         />
                     </div>
-                    <div className="form-group col">
+                    <div className="form-group col mb-2">
                         <label className="required-label" htmlFor="genre">Genre</label>
                         <select id={id + "-genre"} name="genre" className="form-control" required={true}>
                             <option>Sci-fi</option>
@@ -175,7 +178,7 @@ function BookEntry({ book, setBooks, setMessage, id}: { book: Book | null, setBo
                     </div>
                 </div>
                 <div className="form-row">
-                    <div className="form-group col">
+                    <div className="form-group col mb-2">
                         <label className="required-label" htmlFor="month">Month</label>
                         <select id={id + "-month"} name="month" className="form-control" itemType="number" required={true} >
                             <option value="1" selected={book ? new Date(book.date).getMonth() === 0 : true}>January</option>
@@ -193,7 +196,7 @@ function BookEntry({ book, setBooks, setMessage, id}: { book: Book | null, setBo
                         </select>
                     </div>
 
-                    <div className="form-group col">
+                    <div className="form-group col mb-2">
                         <label className="required-label" htmlFor="day">Day</label>
                         <input type="number"
                                 className="form-control"
@@ -204,7 +207,7 @@ function BookEntry({ book, setBooks, setMessage, id}: { book: Book | null, setBo
                             />
                     </div>
 
-                    <div className="form-group col">
+                    <div className="form-group col mb-2">
                         <label className="required-label" htmlFor="year">Year</label>
                         <input type="number"
                             className="form-control"
@@ -216,22 +219,25 @@ function BookEntry({ book, setBooks, setMessage, id}: { book: Book | null, setBo
                     </div>
 
                 </div>
-                <small id="dateHelper" className="form-text text-muted">Please enter the date that you finished reading the book</small>
-                <br/>
-                <div className="form-group">
+                <small id="dateHelper" className="form-text text-muted p-0 m-0">Please enter the date that you finished reading the book</small>
+                <div className="form-group mb-2">
                     <label htmlFor="review">Review</label>
                     <textarea className="form-control" name="review" id="review" rows={3} defaultValue={book ? book.review : ""}></textarea>
                 </div>
-                <br/>
                 <div>
                     {bookError && <div className="alert alert-danger">{bookError}</div>}
                 </div>
                 <div className="container p-0">
                     <div className="row no-gutters">
-                        {book ? 
-                        <div className="col">
+                        {book ? <>
+                        <div className="col mr-3">
                             <button type="button" className="btn btn-danger" id="deleteEntry" onClick={deleteEntry}>Delete</button>
                         </div>
+                        <div className="col-4">
+                            <button type="button" className="btn btn-outline-success nohover" id="reloadCover" ref={reloadBtnRef} data-toggle="button" aria-pressed="false">
+                            Reload Cover?
+                            </button>
+                        </div></>
                         :  null }
                         <div className="col"></div>
                         <button type="button" className="btn btn-secondary mx-2" id={id + "-closeModal"} data-dismiss="modal">Close</button>

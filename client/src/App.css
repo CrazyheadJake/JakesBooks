@@ -16,3 +16,12 @@ input[type=number] {
   -moz-appearance: textfield;
   appearance: textfield;
 }
+
+
+.nohover.focus {
+    box-shadow: none !important;
+}
+.nohover:hover:not(.active) {
+    background-color: rgb(from var(--success) r g b / 0.1);
+    color: var(--success) !important;
+}

@@ -59,7 +59,7 @@ async function updateBook(req: Request, res: Response) {
         // Update cover image only if title or author changed
         const oldBook = await db.collection("books").findOne(query);
         if (oldBook) {
-            if (oldBook.title !== book.title || oldBook.author !== book.author) {
+            if (oldBook.title !== book.title || oldBook.author !== book.author || req.body.reloadCover) {
                 book.cover = await getCoverImageUrl(book.title, book.author);
             } else {
                 book.cover = oldBook.cover;
