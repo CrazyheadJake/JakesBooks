@@ -16,7 +16,7 @@ function BookCard({ book, setSelectedBook }: { book: Book, setSelectedBook: (x: 
         console.log("openEdit called, form:", form);
     }
 
-    return  (
+    return (
         <div className="card border-info mr-3 mb-3" style={{width: "15%", minWidth: "14rem"}}>
             <img className="card-img-top" src={book.cover || DEFAULT_COVER} alt="Book Cover" onError={missingCover}/>
 
@@ -39,12 +39,15 @@ function BookCard({ book, setSelectedBook }: { book: Book, setSelectedBook: (x: 
                 book.review.length > 100 ? book.review.substring(0, 97) + "..." : book.review
                }</p>
                 </> : <></>}
-                <div className="progress">
-                    <div className="progress-bar" style={{width: book.rating + "%"}} role="progressbar">{ book.rating }/100</div>
-                </div>
-                <button type="button" className="btn btn-info mt-3" data-toggle="modal" data-target="#editBookEntry" onClick={openEdit}>Edit</button>
+                <div className="bottom">
+                    <div className="progress">
+                        <div className="progress-bar" style={{width: book.rating + "%"}} role="progressbar">{ book.rating }/100</div>
+                    </div>
+                    <button type="button" className="btn btn-info mt-3" data-toggle="modal" data-target="#editBookEntry" onClick={openEdit}>Edit</button>
+                    {book.review && <button type="button" className="btn btn-info mt-3 ml-2" data-toggle="modal" data-target="#readReview" onClick={() => setSelectedBook(book)}>Read Full Review</button>}
 
-                {book.review && <button type="button" className="btn btn-info mt-3 ml-2" data-toggle="modal" data-target="#readReview" onClick={() => setSelectedBook(book)}>Read Full Review</button>}
+                </div>
+
             </div>
         </div>
     )
