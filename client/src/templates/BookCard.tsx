@@ -34,7 +34,7 @@ function BookCard({ book, setSelectedBook }: { book: Book, setSelectedBook: (x: 
                 <h5 className="card-subtitle mb-2 text-muted">{ new Date(book.date).toLocaleDateString() }</h5>
 
                 { book.review ?
-                <div className="truncate-text">
+                <div className="truncate-text mb-4">
                     {book.review}
                 </div>
                 : <></>}
