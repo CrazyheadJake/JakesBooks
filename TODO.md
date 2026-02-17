@@ -7,8 +7,8 @@
 - Logo
 - Be able to favorite a book
 - Be able to mark books with tags, maybe instead of genres
-- Align buttons/rating to the bottom
-- Show as much review as possible
+- ~~Align buttons/rating to the bottom~~
+- ~~Show as much review as possible~~
 - Page loading is quite slow, authentication is slow
 
 

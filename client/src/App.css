@@ -26,6 +26,9 @@ input[type=number] {
     color: var(--success) !important;
 }
 
+.card {
+    max-height: 45rem;
+}
 .card-body {
     display: flex;
     flex-direction: column;
@@ -33,4 +36,9 @@ input[type=number] {
 
 .bottom {
     margin-top: auto;
+}
+
+
+.truncate-text {
+    overflow-y: hidden;
 }

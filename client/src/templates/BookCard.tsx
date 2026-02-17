@@ -34,11 +34,10 @@ function BookCard({ book, setSelectedBook }: { book: Book, setSelectedBook: (x: 
                 <h5 className="card-subtitle mb-2 text-muted">{ new Date(book.date).toLocaleDateString() }</h5>
 
                 { book.review ?
-                <>
-                <p className="card-text" style={{textAlign: "left"}}>{ 
-                book.review.length > 100 ? book.review.substring(0, 97) + "..." : book.review
-               }</p>
-                </> : <></>}
+                <div className="truncate-text">
+                    {book.review}
+                </div>
+                : <></>}
                 <div className="bottom">
                     <div className="progress">
                         <div className="progress-bar" style={{width: book.rating + "%"}} role="progressbar">{ book.rating }/100</div>
