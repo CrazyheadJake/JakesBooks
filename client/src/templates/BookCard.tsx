@@ -21,14 +21,17 @@ function BookCard({ book, setSelectedBook }: { book: Book, setSelectedBook: (x: 
 
 
     useEffect(() => {
-    const reviewDiv = reviewRef.current;
-    if (reviewDiv) {
-        const isOverflowing = reviewDiv.scrollHeight > reviewDiv.clientHeight;
-        if (isOverflowing) {
-            reviewDiv.classList.add("fade-out");
+        const reviewDiv = reviewRef.current;
+        if (reviewDiv) {
+            const isOverflowing = reviewDiv.scrollHeight > reviewDiv.clientHeight;
+            if (isOverflowing) {
+                reviewDiv.classList.add("fade-out");
+            }
+            else {
+                reviewDiv.classList.remove("fade-out");
+            }
         }
-    }
-}, [book.review]); // Re-run if the review content changes
+    }, [book.review, book]); // Re-run if the review content changes
 
     return (
         <div className="card border-info mr-3 mb-3" style={{width: "15%", minWidth: "14rem"}}>
@@ -48,7 +51,7 @@ function BookCard({ book, setSelectedBook }: { book: Book, setSelectedBook: (x: 
                 <h5 className="card-subtitle mb-2 text-muted">{ new Date(book.date).toLocaleDateString() }</h5>
 
                 { book.review ?
-                <div className="truncate-text" ref={reviewRef}>
+                <div className="truncate-text mb-2" ref={reviewRef}>
                     {book.review}
                 </div>
                 : <></>}
