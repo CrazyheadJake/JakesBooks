@@ -1,8 +1,11 @@
 import type { Book } from "../types/book";
 
 import DEFAULT_COVER from "../assets/default_cover.jpg";
+import { useEffect, useRef } from "react";
 
 function BookCard({ book, setSelectedBook }: { book: Book, setSelectedBook: (x: Book | null) => void }) {
+    const reviewRef = useRef<HTMLDivElement>(null);
+
     function openEdit() {
         setSelectedBook(book);
         const modal = document.getElementById("editBookEntry");
@@ -15,6 +18,17 @@ function BookCard({ book, setSelectedBook }: { book: Book, setSelectedBook: (x: 
 
         console.log("openEdit called, form:", form);
     }
+
+
+    useEffect(() => {
+    const reviewDiv = reviewRef.current;
+    if (reviewDiv) {
+        const isOverflowing = reviewDiv.scrollHeight > reviewDiv.clientHeight;
+        if (isOverflowing) {
+            reviewDiv.classList.add("fade-out");
+        }
+    }
+}, [book.review]); // Re-run if the review content changes
 
     return (
         <div className="card border-info mr-3 mb-3" style={{width: "15%", minWidth: "14rem"}}>
@@ -34,12 +48,12 @@ function BookCard({ book, setSelectedBook }: { book: Book, setSelectedBook: (x: 
                 <h5 className="card-subtitle mb-2 text-muted">{ new Date(book.date).toLocaleDateString() }</h5>
 
                 { book.review ?
-                <div className="truncate-text mb-4">
+                <div className="truncate-text" ref={reviewRef}>
                     {book.review}
                 </div>
                 : <></>}
                 <div className="bottom">
-                    <div className="progress">
+                    <div className="progress mt-1">
                         <div className="progress-bar" style={{width: book.rating + "%"}} role="progressbar">{ book.rating }/100</div>
                     </div>
                     <button type="button" className="btn btn-info mt-3" data-toggle="modal" data-target="#editBookEntry" onClick={openEdit}>Edit</button>

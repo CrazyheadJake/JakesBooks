@@ -42,3 +42,10 @@ input[type=number] {
 .truncate-text {
     overflow-y: hidden;
 }
+
+.fade-out {
+    /* Apply the mask image */
+    mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
+    /* Vendor prefix for broader compatibility */
+    -webkit-mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
+}
