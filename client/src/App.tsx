@@ -13,9 +13,11 @@ import type { Book } from './types/book';
 function App() {
   const [loggedIn, setLogin] = useState<boolean | null>(null);
   const [error, setError] = useState("");
-    const [ books, setBooks ] = useState<Book[]>([]);
+  const [ books, setBooks ] = useState<Book[]>([]);
 
+  // Check authentication status on mount and whenever loggedIn changes to true (e.g. after login/signup)
   useEffect(() => {
+    console.log("loggedIn changed:", loggedIn);
     async function checkAuth() {
       const res = await fetch("/api/getBooks", {
         method: 'GET',
@@ -30,11 +32,8 @@ function App() {
       const data = await res.json();
       setBooks(data);
     }
-  
-  checkAuth();
-  }, []);
-  useEffect(() => {
-    console.log("loggedIn changed:", loggedIn);
+    if (loggedIn !== false)
+      checkAuth();
   }, [loggedIn]);
 
   return (
