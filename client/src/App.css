@@ -27,7 +27,7 @@ input[type=number] {
 }
 
 .card {
-    max-height: 40rem;
+    max-height: 80vh;
 }
 .card-body {
     display: flex;
