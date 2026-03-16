@@ -8,18 +8,27 @@ import Logout from "./pages/Logout"
 import ResetPassword from "./pages/ResetPassword"
 import RequestPasswordReset from "./pages/RequestPasswordReset"
 import './App.css'
+import type { Book } from './types/book';
 
 function App() {
   const [loggedIn, setLogin] = useState<boolean | null>(null);
   const [error, setError] = useState("");
+    const [ books, setBooks ] = useState<Book[]>([]);
 
   useEffect(() => {
     async function checkAuth() {
-      const res = await fetch("/api/checkAuth", {
-        credentials: "include"
+      const res = await fetch("/api/getBooks", {
+        method: 'GET',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' }
       });
+      if (!res.ok) {
+        setLogin(false);
+        return;
+      }
+      setLogin(true);
       const data = await res.json();
-      setLogin(data.loggedIn);
+      setBooks(data);
     }
   
   checkAuth();
@@ -35,7 +44,7 @@ function App() {
         <Routes>
           <Route
             path="/"
-            element={loggedIn ? <Home/>: loggedIn !== null ? <Navigate to="/login" replace /> : <></>}
+            element={loggedIn ? <Home books={books} setBooks={setBooks} />: loggedIn !== null ? <Navigate to="/login" replace /> : <></>}
           />
           <Route path="/login" element={loggedIn ? <Navigate to="/" replace /> : <Login setLogin={setLogin} setError={setError}/>} />
           <Route path="/signup" element={loggedIn ? <Navigate to="/" replace /> : <Signup setLogin={setLogin} setError={setError}/>} />

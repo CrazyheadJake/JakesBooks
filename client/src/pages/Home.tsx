@@ -4,8 +4,7 @@ import BookCard from '../templates/BookCard';
 import BookEntry from '../templates/BookEntry';
 import * as Utils from "../Utils"
 
-function Home() {
-    const [ books, setBooks ] = useState<Book[]>([]);
+function Home({ books, setBooks }: { books: Book[], setBooks: (x: Book[]) => void }) {
     const [ sortedBooks, setSortedBooks ] = useState<Book[]>([]);
     const [ selectedBook, setSelectedBook ] = useState<Book | null>(null);
     const [ sortingMethod, setSortingMethodState ] = useState<string>(localStorage.getItem('sortingMethod') || 'date');
@@ -17,18 +16,6 @@ function Home() {
 
     // Add alert to DOM on message change
     useEffect(() => Utils.addAlert(message), [message]);
-
-    // Fetch books on component mount
-    useEffect(() => {
-        console.log("Fetching books");
-        fetch('/api/getBooks' , {
-            method: 'GET',
-            credentials: 'include',
-            headers: { 'Content-Type': 'application/json' }
-        })
-            .then(res => res.json() as Promise<Book[]>)
-            .then(data => setBooks(data));
-    }, []);
 
     // Sort books by date whenever books change
     useEffect(() => setSortedBooks(sortBooks(books, sortingMethod)), [books, sortingMethod]);
