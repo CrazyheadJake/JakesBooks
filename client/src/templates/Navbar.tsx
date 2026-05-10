@@ -17,6 +17,7 @@ function Navbar({ isLoggedIn, error }: {isLoggedIn: boolean | null, error: strin
           {isLoggedIn ? (
             <>
               <Link className="nav-item nav-link" id="home" to="/">Home</Link>
+              <Link className="nav-item nav-link" id="reader" to="/reader">Reader</Link>
               <Link className="nav-item nav-link" id="logout" to="/logout">Logout</Link>
             </>
           ) : isLoggedIn !== null ? (

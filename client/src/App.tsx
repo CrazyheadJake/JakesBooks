@@ -7,6 +7,7 @@ import Signup from "./pages/Signup"
 import Logout from "./pages/Logout"
 import ResetPassword from "./pages/ResetPassword"
 import RequestPasswordReset from "./pages/RequestPasswordReset"
+import Reader from "./pages/Reader"
 import './App.css'
 import type { Book } from './types/book';
 
@@ -50,6 +51,7 @@ function App() {
           <Route path="/logout" element={<Logout setLogin={setLogin} />} />
           <Route path="/reset-password" element={<ResetPassword setError={setError} setLogin={setLogin}/>} />
           <Route path="/request-reset" element={<RequestPasswordReset setError={setError}/>} />
+          <Route path="/reader" element={<Reader />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
