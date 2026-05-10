@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc",
     "build:dev": "tsc --watch",
-    "dev": "node ./dist/server.js"
+    "dev": "npx tsx watch src/server.ts"
   },
   "author": "Jacob Moleski",
   "license": "Apache-2.0",
